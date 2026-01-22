@@ -1,10 +1,21 @@
-Thermodynamics Module
-=====================
+thermodynamics package
+======================
 
-This module provides core thermodynamic calculations and properties
-used in mechanical engineering analysis.
+Submodules
+----------
 
-.. automodule:: mechlab.thermodynamics
+thermodynamics.properties module
+--------------------------------
+
+.. automodule:: thermodynamics.properties
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: thermodynamics
+   :members:
+   :show-inheritance:
+   :undoc-members:

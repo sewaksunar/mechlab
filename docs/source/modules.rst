@@ -1,7 +1,7 @@
-API Modules
-===========
+mechlab package
+===============
 
-.. toctree::
-   :maxdepth: 2
-
-   thermodynamics
+.. automodule:: mechlab
+   :members:
+   :undoc-members:
+   :show-inheritance:

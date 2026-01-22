@@ -1,12 +1,11 @@
 MechLab Documentation
 ====================
 
-A scientific Python library for mechanical engineering calculations,
-including thermodynamics, mechanics, fluids, and control systems.
+A scientific Python library for **Mechanical Engineering**  
+(Thermodynamics, Mechanics, Fluids, Control — modular & extensible)
 
 .. toctree::
    :maxdepth: 2
-   :caption: API Reference
+   :caption: Contents:
 
-   thermodynamics
    modules
