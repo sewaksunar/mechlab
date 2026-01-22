@@ -10,6 +10,8 @@ MechLab: Mechanical Engineering Lab
    :maxdepth: 2
    :caption: 🚀 Getting Started
    
+   installation
+   uages
    modules
 
 .. toctree::
