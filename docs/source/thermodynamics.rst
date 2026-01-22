@@ -1,21 +1,15 @@
-thermodynamics package
-======================
+Thermodynamics Module
+=====================
 
-Submodules
-----------
-
-thermodynamics.properties module
---------------------------------
-
-.. automodule:: thermodynamics.properties
+.. automodule:: mechlab.thermodynamics
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:
 
-Module contents
----------------
+Properties & Functions
+----------------------
 
-.. automodule:: thermodynamics
+.. automodule:: mechlab.thermodynamics.properties
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:
