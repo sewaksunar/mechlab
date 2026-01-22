@@ -1,6 +1,6 @@
 [project]
 name = "mechlab"
-version = "0.1.0"
+version = "0.1.1"
 description = "Computational Mechanical Engineering Toolkit"
 authors = [
     {name = "Sewak Sunar",email = "sewaksunar@hotmail.com"}
