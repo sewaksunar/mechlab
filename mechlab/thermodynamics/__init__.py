@@ -1,1 +1,1 @@
-from .properties import enthalpy_TP, entropy_TP
+from .state import enthalpy_TP, entropy_TP
