@@ -67,3 +67,10 @@ classifiers = [
 packages = [
   { include = "mechlab" }
 ]
+
+[dependency-groups]
+docs = [
+    "sphinx (>=9.1.0,<10.0.0)",
+    "sphinx-rtd-theme (>=3.1.0,<4.0.0)",
+    "myst-parser (>=5.0.0,<6.0.0)"
+]
