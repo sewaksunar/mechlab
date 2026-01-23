@@ -68,6 +68,10 @@ html_theme_options = {
     
     "sidebar_hide_name": False,
     "navigation_with_keys": True,
+
+    
+    "light_logo": "logo.png",
+    "dark_logo": "logo.png",
     
     # NOTE: 'collapse_navigation' and 'navigation_depth' removed 
     # as they are not supported by the Furo theme.

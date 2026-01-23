@@ -1,14 +1,15 @@
 [project]
 name = "mechlab"
-version = "0.2.2"
+version = "0.2.3"
 description = "Computational Mechanical Engineering Toolkit"
-readme = "README.md"  # Crucial: This links your description to PyPI
+readme = "README.md"
 requires-python = ">=3.10"
+license = {text = "MIT"}
 authors = [
     {name = "Sewak Sunar", email = "sewaksunar@hotmail.com"}
 ]
-license = {text = "MIT"}
 
+# These must be inside the [project] section
 keywords = [
   "mechanical-engineering",
   "thermodynamics",
@@ -64,6 +65,16 @@ dependencies = [
     "sphinx-autobuild (>=2025.8.25,<2026.0.0)"
 ]
 
+[project.urls]
+Homepage = "https://github.com/sewaksunar/mechlab"
+Documentation = "https://sewaksunar.github.io/mechlab/"
+Repository = "https://github.com/sewaksunar/mechlab.git"
+Issues = "https://github.com/sewaksunar/mechlab/issues"
+
+[project.scripts]
+dev = "scripts:docs_dev"
+mechlab = "mechlab.cli:main"
+
 [tool.poetry]
 packages = [
   { include = "mechlab" }
@@ -79,11 +90,6 @@ docs = [
     "sphinx-copybutton (>=0.5.2,<0.6.0)"
 ]
 
-[project.scripts]
-dev = "scripts:docs_dev"
-mechlab = "mechlab.cli:main"
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-

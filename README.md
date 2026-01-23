@@ -1,8 +1,10 @@
 ![PyPI](https://img.shields.io/pypi/v/mechlab)
 ![License](https://img.shields.io/pypi/l/mechlab)
 ![Python](https://img.shields.io/pypi/pyversions/mechlab)
-# MechLab 🔧📘
-
+# MechLab
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sewaksunar/mechlab/main/docs/logo.png" width="200" alt="MechLab Logo">
+</p>
 **MechLab** is an open‑source Python library for **mechanical engineering computations**, designed to provide a unified, modular, and extensible toolkit for students, researchers, and practicing engineers.
 
 It brings together commonly used scientific libraries under a clean, engineering‑focused API for **thermodynamics, fluid mechanics, control systems, and numerical analysis**.
