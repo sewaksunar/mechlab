@@ -1,8 +1,0 @@
-html {
-    scroll-behavior: auto !important; /* Disables the 'bouncy' slide */
-    overscroll-behavior-y: none;      /* Stops the 'rubber-band' effect at top/bottom */
-}
-
-.bd-main .bd-content {
-    overflow: visible !important;     /* Prevents double-scrollbars */
-}
