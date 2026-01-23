@@ -39,7 +39,8 @@ html_theme = "furo"
 html_title = "MechLab Documentation"
 
 html_static_path = ["_static"]
-
+# Add this line if it isn't there
+html_extra_path = ['.nojekyll']
 def setup(app):
     app.add_css_file("custom.css")
 
