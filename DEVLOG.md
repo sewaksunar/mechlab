@@ -364,3 +364,10 @@ If you want next, I can:
 
 Just say the word 🚀
 ```
+
+# Clear old build files to avoid confusion
+Remove-Item -Recurse -Force dist
+
+# Build and Upload
+poetry build
+poetry publish
