@@ -1,9 +1,9 @@
 [project]
 name = "mechlab"
-version = "0.0.1"
+version = "0.2.2"
 description = "Computational Mechanical Engineering Toolkit"
 readme = "README.md"  # Crucial: This links your description to PyPI
-requires-python = ">=3.14"
+requires-python = ">=3.10"
 authors = [
     {name = "Sewak Sunar", email = "sewaksunar@hotmail.com"}
 ]
@@ -65,7 +65,6 @@ dependencies = [
 ]
 
 [tool.poetry]
-# Keep the package inclusion here
 packages = [
   { include = "mechlab" }
 ]
@@ -82,7 +81,9 @@ docs = [
 
 [project.scripts]
 dev = "scripts:docs_dev"
+mechlab = "mechlab.cli:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
