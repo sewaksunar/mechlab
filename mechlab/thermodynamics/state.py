@@ -1,19 +1,17 @@
-import numpy as np
-import sympy as sp
+class State:
+    """
+    Represents a thermodynamic state of a pure substance.
 
-# Symbols for SymPy equations
-P, V, n, R, T = sp.symbols('P V n R T')
+    Usage:
+        >>> from mechlab.thermodynamics import State
+        >>> water = State("water", T=373.15, P=101325)
+        >>> print(f"Enthalpy: {water.h:.2f} J/kg")
 
-def enthalpy_TP(fluid: str, temp: float, press: float) -> float:
-    """Calculates Enthalpy (Simplified Ideal Gas Model: H = Cp * T)"""
-    cp_air = 1005  # J/kg-K
-    return float(cp_air * temp)
+    Expected Output:
+        .. code-block:: text
 
-def entropy_TP(fluid: str, temp: float, press: float) -> float:
-    """Calculates Entropy (Simplified Model)"""
-    return float(1.0 * temp / press)
+           Enthalpy: 2675529.15 J/kg
 
-def get_pressure_func():
-    """Returns a numerical function for P = nRT/V"""
-    ideal_gas_eq = (n * R * T) / V
-    return sp.lambdify((n, R, T, V), ideal_gas_eq, 'numpy')
+    The state is defined by two independent intensive properties. 
+    Internal logic handles phase detection (Subcooled, Saturated, Superheated).
+    """

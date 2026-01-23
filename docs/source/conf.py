@@ -14,7 +14,7 @@ author = "Sewak Sunar"
 # -- General configuration ---------------------------------------------------
 extensions = [
     "sphinx.ext.autodoc",       # Pulls docs from your code
-    "sphinx.ext.autosummary",   # REQUIRED for modular API generation
+    "sphinx.ext.autosummary",   # Required for summary tables
     "sphinx.ext.napoleon",      # Support for NumPy/Google style docstrings
     "sphinx.ext.viewcode",      # Adds links to highlighted source code
     "sphinx.ext.mathjax",       # Renders LaTeX math in the browser
@@ -24,9 +24,11 @@ extensions = [
 ]
 
 # -- Modular Automation Settings ---------------------------------------------
-autosummary_generate = True     # Automatically create pages for modules
+# Set to True to prevent duplicate page generation and fix "Double Vision"
+autosummary_generate = True 
+
 autodoc_typehints = "description"
-add_module_names = False
+add_module_names = True
 
 # Support for Math in Markdown (MyST)
 myst_enable_extensions = ["amsmath", "dollarmath"]
@@ -39,17 +41,22 @@ html_theme = "furo"
 html_title = "MechLab Documentation"
 
 html_static_path = ["_static"]
-# Add this line if it isn't there
 html_extra_path = ['.nojekyll']
+
+# Custom CSS integration
 def setup(app):
     app.add_css_file("custom.css")
 
+# Latest MathJax
 mathjax_path = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 
+# -- Furo Theme Options ------------------------------------------------------
 html_theme_options = {
     "source_repository": "https://github.com/sewaksunar/mechlab/",
     "source_branch": "main",
     "source_directory": "docs/source/",
+    
+    # Brand Colors
     "light_css_variables": {
         "color-brand-primary": "#192bd0", 
         "color-brand-content": "#1c00e3",
@@ -58,4 +65,10 @@ html_theme_options = {
         "color-brand-primary": "#007fff",
         "color-brand-content": "#2196f3",
     },
+    
+    "sidebar_hide_name": False,
+    "navigation_with_keys": True,
+    
+    # NOTE: 'collapse_navigation' and 'navigation_depth' removed 
+    # as they are not supported by the Furo theme.
 }

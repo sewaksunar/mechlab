@@ -1,25 +1,56 @@
-import numpy as np
+r"""
+Mechanics & Dynamics
+====================
 
-def calculate_moment(force: float, distance: float) -> float:
-    """
-    Calculate the moment (torque) about a point.
+This module provides tools for both static structural analysis and 
+rigid body dynamics.
+"""
 
-    :param force: Applied force in Newtons (N).
-    :param distance: Perpendicular distance from the pivot (m).
-    :return: Moment in Newton-meters (Nm).
-    """
-    return float(force * distance)
+class Beam:
+    r"""
+    Represents a structural cantilever beam.
 
-def cantilever_deflection(P: float, L: float, E: float, I: float) -> float:
-    """
-    Calculate max deflection ($\delta$) for a cantilever beam with a point load at the end.
+    **Deflection Formula:**
 
     .. math::
-       \delta = \frac{P L^3}{3 E I}
 
-    :param P: Load in Newtons (N).
-    :param L: Length of beam (m).
-    :param E: Modulus of Elasticity (Pa).
-    :param I: Moment of Inertia (m^4).
+        \delta_{max} = \frac{P L^3}{3 E I}
+
+    Args:
+        L (float): Length [m].
+        E (float): Young's Modulus [Pa].
+        I (float): Moment of Inertia [m^4].
     """
-    return (P * L**3) / (3 * E * I)
+    def __init__(self, L, E, I):
+        self.L, self.E, self.I = L, E, I
+
+    def max_deflection(self, load):
+        r"""
+        Calculates max deflection at the free end using:
+        :math:`\delta = \frac{FL^3}{3EI}`
+        """
+        return (load * self.L**3) / (3 * self.E * self.I)
+
+
+
+class RigidBody:
+    r"""
+    Represents a point mass for dynamic calculations.
+
+    **Weight Calculation:**
+
+    .. math::
+
+        W = m \cdot g
+
+    Args:
+        mass (float): Mass [kg].
+        position (tuple): (x, y) coordinates [m].
+    """
+    def __init__(self, mass, position):
+        self.mass = mass
+        self.position = position
+
+    def weight(self):
+        """Returns weight in Newtons (:math:`N`)."""
+        return self.mass * 9.81

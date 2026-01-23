@@ -1,29 +1,48 @@
 Installation
 ============
 
-MechLab is a Python-based engineering library. We recommend installing it within a virtual environment to manage dependencies safely.
+MechLab is designed to be lightweight and modular. We strongly recommend using a virtual environment (via Poetry or venv) to ensure your engineering dependencies remain isolated and stable.
+
+
+
+Prerequisites
+-------------
+
+Before installing, ensure your system meets these requirements:
+
+* **Python:** 3.9 or higher
+* **Operating System:** Windows, macOS, or Linux
+* **Core Libraries:** NumPy, SciPy (installed automatically)
+
+Installation Methods
+--------------------
+
+Choose the method that best fits your workflow.
 
 .. tab-set::
 
-   .. tab-item:: 📦 Poetry
-      
-      This is the recommended way to install MechLab for project development.
+   .. tab-item:: 📦 Poetry (Recommended)
+      :sync: poetry
+
+      Use this for reproducible engineering projects. Poetry ensures your dependency tree is locked.
 
       .. code-block:: bash
 
          poetry add mechlab
 
    .. tab-item:: 🐍 Pip
-      
-      Standard installation for quick scripts or Google Colab.
+      :sync: pip
+
+      Ideal for simple scripts, Jupyter Notebooks, or Google Colab environments.
 
       .. code-block:: bash
 
          pip install mechlab
 
    .. tab-item:: 🏗️ From Source
-      
-      For contributors who want to modify the mechanics or thermo engines.
+      :sync: source
+
+      Best for contributors or those needing the "bleeding edge" version.
 
       .. code-block:: bash
 
@@ -36,15 +55,11 @@ MechLab is a Python-based engineering library. We recommend installing it within
 Verify Installation
 -------------------
 
-After installation, verify that the engineering modules are accessible by running this in your terminal:
+To confirm that the mechanics and thermodynamics engines are correctly linked, run the following command in your terminal:
 
 .. code-block:: bash
 
-   python -c "import mechlab; print(f'MechLab {mechlab.__version__} initialized.')"
+    python -c "import mechlab; print(f'✅ MechLab {mechlab.__version__} successfully initialized.')"
 
-.. note: ⚠️ Prerequisites
-   :class-card: sd-bg-light
-   
-   * **Python:** 3.9 or higher
-   * **Operating System:** Windows, macOS, or Linux
-   * **Core Dependencies:** NumPy, SciPy, SymPy
+.. tip::
+   **Stuck?** If you encounter issues with `NumPy` or `SciPy` binaries on Windows, ensure you have the `Microsoft Visual C++ Redistributable` installed.

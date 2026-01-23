@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Changelog" href="../changelog/index.html"><link rel="prev" title="Engineering Guides" href="../guides/index.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Engineering Guides" href="../guides/index.html"><link rel="prev" title="Thermodynamics" href="thermodynamics.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Frequently Asked Questions - MechLab Documentation</title>
+        <title>Mechanics - MechLab Documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -181,7 +181,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -213,19 +213,19 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../reference/index.html">Reference</a><input aria-label="Toggle navigation of Reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../reference/thermodynamics.html">Thermodynamics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/mechanics.html">Mechanics</a></li>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Reference</a><input aria-label="Toggle navigation of Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="thermodynamics.html">Thermodynamics</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Mechanics</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Project Updates</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guides/index.html">Engineering Guides</a><input aria-label="Toggle navigation of Engineering Guides" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/index.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing to MechLab</a></li>
 </ul>
@@ -248,12 +248,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/sewaksunar/mechlab/blob/main/docs/source/faq/index.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/sewaksunar/mechlab/blob/main/docs/source/reference/mechanics.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/sewaksunar/mechlab/edit/main/docs/source/faq/index.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/sewaksunar/mechlab/edit/main/docs/source/reference/mechanics.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -265,19 +265,106 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="frequently-asked-questions">
-<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading">¶</a></h1>
-<p><strong>Q: Why are my results different from my textbook?</strong>
-A: Ensure you are using SI units. MechLab defaults to Pascals (Pa) for pressure and Kelvin (K) for temperature unless specified otherwise in the module documentation.</p>
-<p><strong>Q: Does MechLab support liquid-vapor mixtures?</strong>
-A: Yes. The <code class="docutils literal notranslate"><span class="pre">State</span></code> module in Thermodynamics handles quality ($x$) calculations for substances within the vapor dome.</p>
-<p><strong>Q: Can I use MechLab for dynamic loading?</strong>
-A: Currently, the Mechanics module is focused on Statics. Dynamic analysis is planned for the v0.2.0 release.</p>
+          <section id="mechanics">
+<h1>Mechanics<a class="headerlink" href="#mechanics" title="Link to this heading">¶</a></h1>
+<div class="table-wrapper colwidths-given docutils container" id="id1">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Analysis Comparison</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p><strong>Static Analysis (Beam)</strong></p></th>
+<th class="head"><p><strong>Dynamics (RigidBody)</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Primary Goal</strong></p></td>
+<td><p>Deformation &amp; Stress</p></td>
+<td><p>Equilibrium &amp; Weight</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Key Variable</strong></p></td>
+<td><p>$I$ (Inertia)</p></td>
+<td><p>$m$ (Mass)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Governing Law</strong></p></td>
+<td><p>Euler-Bernoulli Theory</p></td>
+<td><p>Newton’s Second Law ($F=ma$)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Main Output</strong></p></td>
+<td><p>Deflection ($delta$)</p></td>
+<td><p>Weight ($W$)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>—</p>
+<section id="static-analysis">
+<h2>Static Analysis<a class="headerlink" href="#static-analysis" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mechlab.mechanics.</span></span><span class="sig-name descname"><span class="pre">Beam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mechlab/mechanics/statics.html#Beam"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Represents a structural cantilever beam.</p>
+<p><strong>Deflection Formula:</strong></p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\delta_{max} = \frac{P L^3}{3 E I}\]</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>float</em>) – Length [m].</p></li>
+<li><p><strong>E</strong> (<em>float</em>) – Young’s Modulus [Pa].</p></li>
+<li><p><strong>I</strong> (<em>float</em>) – Moment of Inertia [m^4].</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">max_deflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mechlab/mechanics/statics.html#Beam.max_deflection"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Calculates max deflection at the free end using:
+<span class="math notranslate nohighlight">\(\delta = \frac{FL^3}{3EI}\)</span></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="rigid-body-dynamics">
+<h2>Rigid Body Dynamics<a class="headerlink" href="#rigid-body-dynamics" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">mechlab.mechanics.</span></span><span class="sig-name descname"><span class="pre">RigidBody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mechlab/mechanics/statics.html#RigidBody"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Represents a point mass for dynamic calculations.</p>
+<p><strong>Weight Calculation:</strong></p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[W = m \cdot g\]</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mass</strong> (<em>float</em>) – Mass [kg].</p></li>
+<li><p><strong>position</strong> (<em>tuple</em>) – (x, y) coordinates [m].</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">weight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mechlab/mechanics/statics.html#RigidBody.weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Returns weight in Newtons (<span class="math notranslate nohighlight">\(N\)</span>).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 
         </article>
@@ -285,23 +372,23 @@ A: Currently, the Mechanics module is focused on Statics. Dynamic analysis is pl
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../changelog/index.html">
+          <a class="next-page" href="../guides/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Changelog</div>
+                <div class="title">Engineering Guides</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../guides/index.html">
+          <a class="prev-page" href="thermodynamics.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Engineering Guides</div>
+                <div class="title">Thermodynamics</div>
                 
               </div>
             </a>
@@ -323,8 +410,28 @@ A: Currently, the Mechanics module is focused on Statics. Dynamic analysis is pl
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Mechanics</a><ul>
+<li><a class="reference internal" href="#static-analysis">Static Analysis</a></li>
+<li><a class="reference internal" href="#rigid-body-dynamics">Rigid Body Dynamics</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
@@ -336,5 +443,7 @@ A: Currently, the Mechanics module is focused on Statics. Dynamic analysis is pl
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>
