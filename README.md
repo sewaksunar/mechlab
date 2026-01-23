@@ -3,7 +3,7 @@
 ![Python](https://img.shields.io/pypi/pyversions/mechlab)
 # MechLab
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sewaksunar/mechlab/main/docs/logo.png" width="200" alt="MechLab Logo">
+  <img src="https://github.com/sewaksunar/mechlab/blob/main/docs/source/_static/logo.png" width="200" alt="MechLab Logo">
 </p>
 **MechLab** is an open‑source Python library for **mechanical engineering computations**, designed to provide a unified, modular, and extensible toolkit for students, researchers, and practicing engineers.
 
