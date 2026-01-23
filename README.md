@@ -1,28 +1,30 @@
 ![PyPI](https://img.shields.io/pypi/v/mechlab)
 ![License](https://img.shields.io/pypi/l/mechlab)
 ![Python](https://img.shields.io/pypi/pyversions/mechlab)
+
 # MechLab
 <p align="center">
   <img src="https://github.com/sewaksunar/mechlab/blob/main/docs/source/_static/logo.png" width="200" alt="MechLab Logo">
 </p>
+
 **MechLab** is an open‑source Python library for **mechanical engineering computations**, designed to provide a unified, modular, and extensible toolkit for students, researchers, and practicing engineers.
 
 It brings together commonly used scientific libraries under a clean, engineering‑focused API for **thermodynamics, fluid mechanics, control systems, and numerical analysis**.
 
 ---
 
-## ✨ Features
+## Fatures
 
-* 🔥 Thermodynamics utilities (properties, processes, cycles)
-* 🌊 Fluid mechanics calculations (dimensionless numbers, flow relations)
-* 🎛️ Control systems support
-* 🧮 Symbolic & numerical computation
-* 📐 Unit‑safe calculations (planned)
-* 🧱 Modular structure (easy to extend)
+* Thermodynamics utilities (properties, processes, cycles)
+* Fluid mechanics calculations (dimensionless numbers, flow relations)
+* Control systems support
+* Symbolic & numerical computation
+* Unit‑safe calculations (planned)
+* Modular structure (easy to extend)
 
 ---
 
-## 📦 Installation
+## Istallation
 
 Install directly from **PyPI**:
 
@@ -38,7 +40,7 @@ poetry add mechlab
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 from mechlab.thermodynamics import enthalpy_TP
@@ -54,7 +56,7 @@ print(f"Enthalpy: {h:.2f} J/kg")
 
 ---
 
-## 📂 Package Structure
+## Package Structure
 
 ```text
 mechlab/
@@ -81,24 +83,17 @@ mechlab/
 
 ---
 
-## 🔬 Dependencies
+## Dependencies
 
 MechLab is built on top of proven scientific libraries:
 
-* `numpy`
-* `scipy`
-* `sympy`
-* `control`
-* `fluids`
-* `CoolProp`
-* `pint`
-* `matplotlib`
+`numpy`,  `scipy`, `sympy`, `control`, `fluids`, `CoolProp`, `pint`, `matplotlib`
 
 These are installed automatically with MechLab.
 
 ---
 
-## 🧠 Design Philosophy
+## Design Philosophy
 
 * **Engineering‑first API** (clear variable names, physical meaning)
 * **Readable code** over premature optimization
@@ -107,7 +102,7 @@ These are installed automatically with MechLab.
 
 ---
 
-## 📈 Roadmap
+## Roadmap
 
 * [ ] Rankine, Otto, Diesel cycles
 * [ ] Pipe flow & heat exchanger modules
@@ -118,7 +113,7 @@ These are installed automatically with MechLab.
 
 ---
 
-## 🧪 Development Setup
+## Development Setup
 
 Clone the repository:
 
@@ -142,7 +137,7 @@ pytest
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome!
 
@@ -159,13 +154,13 @@ Please follow:
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the **MIT License**.
 
 ---
 
-## 👤 Author
+## Author
 
 **Sewak Sunar**
 Mechanical Engineering Enthusiast & Python Developer
@@ -174,7 +169,7 @@ Mechanical Engineering Enthusiast & Python Developer
 
 ---
 
-## ⭐ Acknowledgements
+## Acknowledgements
 
 Inspired by mechanical engineering textbooks and the open‑source scientific Python ecosystem.
 
