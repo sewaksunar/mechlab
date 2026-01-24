@@ -1,2 +1,2 @@
-from .statics import Beam, RigidBody
-__all__ = ["Beam"]
+from .statics import StressOnArbitaryPlane
+__all__ = ["StressOnArbitaryPlane"]

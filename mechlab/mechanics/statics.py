@@ -30,6 +30,8 @@ class Beam:
         :math:`\delta = \frac{FL^3}{3EI}`
         """
         return (load * self.L**3) / (3 * self.E * self.I)
+    def slope(self, x):
+        return x**2
 
 
 
