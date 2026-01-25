@@ -61,24 +61,37 @@ print(f"Enthalpy: {h:.2f} J/kg")
 ```text
 mechlab/
 │
+|--- mechanics/
+|   |--- __init__.py
+|   |--- statics/
+|   |   |---stress.py
+|   |   |---strain.py
+|   |--- dynamics/
+|       |--- linermotion.py
+|       |--- rectiliner_motion.py
+|       |--- 3d_motion.py
+|   
+|--- mscience/ # material science
+|    |---
+|
 ├── thermodynamics/
-│   ├── __init__.py
-│   ├── properties.py
-│   └── cycles.py
+│   |--- __init__.py
+│   |--- properties.py
+│   |--- cycles.py
 │
-├── fluid_mechanics/
-│   ├── __init__.py
-│   └── dimensionless.py
+|--- fluid_mechanics/
+│   |--- __init__.py
+│   |--- dimensionless.py
 │
-├── control_systems/
-│   ├── __init__.py
-│   └── linear.py
+|--- control_systems/
+│   |--- __init__.py
+│   |--- linear.py
 │
-├── utils/
-│   ├── __init__.py
-│   └── constants.py
+|--- utils/
+│   |--- __init__.py
+│   |--- constants.py
 │
-└── __init__.py
+|--- __init__.py
 ```
 
 ---
