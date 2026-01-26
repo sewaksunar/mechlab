@@ -1,11 +1,14 @@
-![PyPI](https://img.shields.io/pypi/v/mechlab)
-![License](https://img.shields.io/pypi/l/mechlab)
-![Python](https://img.shields.io/pypi/pyversions/mechlab)
-
-# MechLab
 <p align="center">
   <img src="https://github.com/sewaksunar/mechlab/blob/main/docs/source/_static/logo.png" width="200" alt="MechLab Logo">
 </p>
+
+![PyPI](https://img.shields.io/pypi/v/mechlab)
+![License](https://img.shields.io/pypi/l/mechlab)
+![Python](https://img.shields.io/pypi/pyversions/mechlab)
+[![docs](https://github.com/3b1b/manim/workflows/docs/badge.svg)](https://sewaksunar.github.io/mechlab/)
+<!-- [![MechLab Subreddit](https://img.shields.io/reddit/subreddit-subscribers/manim.svg?color=ff4301&label=reddit&logo=reddit)](https://www.reddit.com/r/) -->
+
+# MechLab
 
 **MechLab** is an open-source **Python library for mechanical engineering computations**, providing a unified, modular, and extensible toolkit for **students, researchers, and practicing engineers**.
 
@@ -101,7 +104,7 @@ mechlab/
 
 MechLab is built on top of proven scientific Python libraries:
 
-`numpy` `scipy``sympy` `control` `fluids` `CoolProp` `pint` `matplotlib`
+`numpy` `scipy` `sympy` `control` `fluids` `CoolProp` `pint` `matplotlib`
 
 All dependencies are installed automatically.
 
