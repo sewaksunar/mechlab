@@ -10,7 +10,7 @@ Prerequisites
 
 Before installing, ensure your system meets these requirements:
 
-* **Python:** 3.9 or higher
+* **Python:** 3.13.5 or higher
 * **Operating System:** Windows, macOS, or Linux
 * **Core Libraries:** NumPy, SciPy (installed automatically)
 
@@ -21,14 +21,14 @@ Choose the method that best fits your workflow.
 
 .. tab-set::
 
-   .. tab-item:: 📦 Poetry (Recommended)
-      :sync: poetry
+   .. tab-item:: 📦 UV (Recommended)
+      :sync: uv
 
-      Use this for reproducible engineering projects. Poetry ensures your dependency tree is locked.
+      Use this for reproducible engineering projects. UV ensures your dependency tree is locked.
 
       .. code-block:: bash
 
-         poetry add mechlab
+         uv add mechlab
 
    .. tab-item:: 🐍 Pip
       :sync: pip
@@ -48,8 +48,6 @@ Choose the method that best fits your workflow.
 
          git clone https://github.com/sewaksunar/mechlab.git
          cd mechlab
-         poetry install
-
 ---
 
 Verify Installation
@@ -59,7 +57,7 @@ To confirm that the mechanics and thermodynamics engines are correctly linked, r
 
 .. code-block:: bash
 
-    python -c "import mechlab; print(f'✅ MechLab {mechlab.__version__} successfully initialized.')"
+    python -c "import mechlab; print(f'MechLab {mechlab.__version__} successfully initialized.')"
 
 .. tip::
    **Stuck?** If you encounter issues with `NumPy` or `SciPy` binaries on Windows, ensure you have the `Microsoft Visual C++ Redistributable` installed.

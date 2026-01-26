@@ -48,13 +48,14 @@ dependencies = [
   "pillow==12.1.0",
   "pint==0.25.2",
   "platformdirs==4.5.1",
+  "pycairo>=1.29.0",
   "pygments==2.19.2",
   "pyparsing==3.3.2",
   "python-dateutil==2.9.0.post0",
   "scipy==1.17.0",
   "six==1.17.0",
   "sympy==1.14.0",
-  "typing-extensions==4.15.0"
+  "typing-extensions==4.15.0",
 ]
 
 [project.urls]
