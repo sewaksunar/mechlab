@@ -7,24 +7,27 @@
   <img src="https://github.com/sewaksunar/mechlab/blob/main/docs/source/_static/logo.png" width="200" alt="MechLab Logo">
 </p>
 
-**MechLab** is an open‑source Python library for **mechanical engineering computations**, designed to provide a unified, modular, and extensible toolkit for students, researchers, and practicing engineers.
+**MechLab** is an open-source **Python library for mechanical engineering computations**, providing a unified, modular, and extensible toolkit for **students, researchers, and practicing engineers**.
 
-It brings together commonly used scientific libraries under a clean, engineering‑focused API for **thermodynamics, fluid mechanics, control systems, and numerical analysis**.
+It brings together widely used scientific libraries under a clean, engineering-focused API for:
+
+`mechanics` `thermodynamics` `fluid mechanics` `control systems` `numerical & symbolic computation`
 
 ---
 
-## Fatures
+## Features
 
+* Mechanics (statics & dynamics)
 * Thermodynamics utilities (properties, processes, cycles)
 * Fluid mechanics calculations (dimensionless numbers, flow relations)
-* Control systems support
+* Control systems analysis
 * Symbolic & numerical computation
-* Unit‑safe calculations (planned)
-* Modular structure (easy to extend)
+* Modular and extensible architecture
+* Sphinx-based documentation with API reference
 
 ---
 
-## Istallation
+## Installation
 
 Install directly from **PyPI**:
 
@@ -32,10 +35,10 @@ Install directly from **PyPI**:
 pip install mechlab
 ```
 
-Or using **Poetry**:
+Using **uv** (recommended):
 
 ```bash
-poetry add mechlab
+uv pip install mechlab
 ```
 
 ---
@@ -47,8 +50,8 @@ from mechlab.thermodynamics import enthalpy_TP
 
 h = enthalpy_TP(
     fluid="Water",
-    T=500,        # Temperature in K
-    P=3e6         # Pressure in Pa
+    T=500,        # Temperature [K]
+    P=3e6         # Pressure [Pa]
 )
 
 print(f"Enthalpy: {h:.2f} J/kg")
@@ -61,72 +64,71 @@ print(f"Enthalpy: {h:.2f} J/kg")
 ```text
 mechlab/
 │
-|--- mechanics/
-|   |--- __init__.py
-|   |--- statics/
-|   |   |---stress.py
-|   |   |---strain.py
-|   |--- dynamics/
-|       |--- linermotion.py
-|       |--- rectiliner_motion.py
-|       |--- 3d_motion.py
-|   
-|--- mscience/ # material science
-|    |---
-|
+├── mechanics/
+│   ├── __init__.py
+│   ├── statics/
+│   │   ├── stress.py
+│   │   └── strain.py
+│   └── dynamics/
+│       ├── linear_motion.py
+│       ├── rectilinear_motion.py
+│       └── motion_3d.py
+│
+├── mscience/              # Material science
+│
 ├── thermodynamics/
-│   |--- __init__.py
-│   |--- properties.py
-│   |--- cycles.py
+│   ├── __init__.py
+│   ├── properties.py
+│   └── cycles.py
 │
-|--- fluid_mechanics/
-│   |--- __init__.py
-│   |--- dimensionless.py
+├── fluid_mechanics/
+│   ├── __init__.py
+│   └── dimensionless.py
 │
-|--- control_systems/
-│   |--- __init__.py
-│   |--- linear.py
+├── control_systems/
+│   ├── __init__.py
+│   └── linear.py
 │
-|--- utils/
-│   |--- __init__.py
-│   |--- constants.py
+├── utils/
+│   ├── __init__.py
+│   └── constants.py
 │
-|--- __init__.py
+└── __init__.py
 ```
 
----
 
 ## Dependencies
 
-MechLab is built on top of proven scientific libraries:
+MechLab is built on top of proven scientific Python libraries:
 
-`numpy`,  `scipy`, `sympy`, `control`, `fluids`, `CoolProp`, `pint`, `matplotlib`
+`numpy` `scipy``sympy` `control` `fluids` `CoolProp` `pint` `matplotlib`
 
-These are installed automatically with MechLab.
+All dependencies are installed automatically.
 
 ---
 
 ## Design Philosophy
 
-* **Engineering‑first API** (clear variable names, physical meaning)
+* **Engineering-first API** (clear physical meaning)
 * **Readable code** over premature optimization
-* **Modular** – each subject area is independent
-* **Extensible** – easy to add new models & correlations
+* **Modular design** — subject areas are independent
+* **Extensible** — easy to add new models & correlations
+* **Documented** — API reference generated directly from code
 
 ---
 
 ## Roadmap
 
-* [ ] Rankine, Otto, Diesel cycles
-* [ ] Pipe flow & heat exchanger modules
-* [ ] Full unit‑aware API using Pint
-* [ ] Validation against textbook examples
-* [ ] Interactive Jupyter examples
-* [ ] Documentation website
+* Rankine, Otto, Diesel cycles
+* Pipe flow & heat exchanger modules
+* Full unit-aware API using Pint
+* Validation against textbook examples
+* Interactive Jupyter notebooks
+* Hosted documentation website
 
 ---
 
-## Development Setup
+## Development Setup (Contributors)
 
 Clone the repository:
 
@@ -135,11 +137,18 @@ git clone https://github.com/sewaksunar/mechlab.git
 cd mechlab
 ```
 
-Install dependencies with Poetry:
+Create a virtual environment and install dependencies with **uv**:
 
 ```bash
-poetry install
-poetry shell
+uv venv
+uv pip install -e .
+```
+
+Build documentation:
+
+```bash
+cd docs
+uv run sphinx-build source build
 ```
 
 Run tests:
@@ -161,9 +170,29 @@ Contributions are welcome!
 
 Please follow:
 
-* PEP‑8 style
+* PEP-8 style
 * Clear docstrings
 * Basic tests for new features
+
+---
+---
+
+## Documentation
+
+The documentation is built using **Sphinx** with autodoc support.
+
+Build locally:
+
+```bash
+cd docs
+uv run sphinx-build source build
+```
+
+Then open:
+
+```
+docs/build/index.html
+```
 
 ---
 
@@ -178,12 +207,14 @@ This project is licensed under the **MIT License**.
 **Sewak Sunar**
 Mechanical Engineering Enthusiast & Python Developer
 
-* GitHub: [https://github.com/sewaksunar](https://github.com/sewaksunar)
+GitHub: [https://github.com/sewaksunar](https://github.com/sewaksunar)
 
 ---
 
 ## Acknowledgements
 
-Inspired by mechanical engineering textbooks and the open‑source scientific Python ecosystem.
+Inspired by mechanical engineering textbooks and the open-source scientific Python ecosystem.
 
-If you find MechLab useful, please ⭐ the repository on GitHub!
+If you find **MechLab** useful, please ⭐ the repository on GitHub!
+
+---
