@@ -3,13 +3,12 @@ name = "mechlab"
 version = "0.2.3"
 description = "Computational Mechanical Engineering Toolkit"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
     {name = "Sewak Sunar", email = "sewaksunar@hotmail.com"}
 ]
 
-# These must be inside the [project] section
 keywords = [
   "mechanical-engineering",
   "thermodynamics",
@@ -93,6 +92,3 @@ docs = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.dependencies]
-myst-parser = ">=0.18,<5.0"
