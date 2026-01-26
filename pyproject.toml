@@ -3,7 +3,7 @@ name = "mechlab"
 version = "0.2.3"
 description = "Computational Mechanical Engineering Toolkit"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
     {name = "Sewak Sunar", email = "sewaksunar@hotmail.com"}
@@ -93,3 +93,6 @@ docs = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+myst-parser = ">=0.18,<5.0"
