@@ -1,20 +1,22 @@
-.venv/
+# Python build artifacts
 __pycache__/
 *.pyc
 *.pyo
 *.egg-info/
 dist/
 build/
+
+# Virtual environments
+.venv/
 .poetry/
+
+# Common binary/doc formats
 *.pdf
 *.png
+
+# Ignore HTML everywhere except docs
 *.html
+!mechlab-docs/**/*.html
 
-
+# Project-specific folders
 mechlab-docs/
-
-# Python Build Folder
-dist/
-
-# Virtual Environments
-.venv/
