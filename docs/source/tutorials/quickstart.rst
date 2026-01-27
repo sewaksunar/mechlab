@@ -11,7 +11,7 @@ Ensure you have the library installed in your environment:
 
    pip install mechlab
 
-Basic Thermodynamic State
+I. Example
 -------------------------
 MechLab uses **SymPy** for symbolic relationships and **NumPy** for numerical evaluation. The core of the library is the Ideal Gas Law:
 

@@ -1,9 +1,9 @@
 Installation
 ============
 
-MechLab is designed to be lightweight and modular. We strongly recommend using a virtual environment (via Poetry or venv) to ensure your engineering dependencies remain isolated and stable.
-
-
+MechLab is designed to be lightweight and modular. We strongly recommend using a
+virtual environment (via Poetry or venv) to ensure your engineering dependencies
+remain isolated and stable.
 
 Prerequisites
 -------------
@@ -24,7 +24,8 @@ Choose the method that best fits your workflow.
    .. tab-item:: 📦 UV (Recommended)
       :sync: uv
 
-      Use this for reproducible engineering projects. UV ensures your dependency tree is locked.
+      Use this for reproducible engineering projects. UV ensures your dependency
+      tree is locked.
 
       .. code-block:: bash
 
@@ -48,16 +49,19 @@ Choose the method that best fits your workflow.
 
          git clone https://github.com/sewaksunar/mechlab.git
          cd mechlab
----
+
 
 Verify Installation
 -------------------
 
-To confirm that the mechanics and thermodynamics engines are correctly linked, run the following command in your terminal:
+To confirm that the mechanics and thermodynamics engines are correctly linked,
+run the following command in your terminal:
 
 .. code-block:: bash
 
-    python -c "import mechlab; print(f'MechLab {mechlab.__version__} successfully initialized.')"
+   python -c "import mechlab; print(f'MechLab {mechlab.__version__} successfully initialized.')"
 
 .. tip::
-   **Stuck?** If you encounter issues with `NumPy` or `SciPy` binaries on Windows, ensure you have the `Microsoft Visual C++ Redistributable` installed.
+
+   **Stuck?** If you encounter issues with NumPy or SciPy binaries on Windows,
+   ensure you have the Microsoft Visual C++ Redistributable installed.

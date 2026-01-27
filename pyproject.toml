@@ -48,6 +48,7 @@ dependencies = [
   "pillow==12.1.0",
   "pint==0.25.2",
   "platformdirs==4.5.1",
+  "plotly>=6.5.2",
   "pycairo>=1.29.0",
   "pygments==2.19.2",
   "pyparsing==3.3.2",
