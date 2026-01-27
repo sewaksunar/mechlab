@@ -1,6 +1,6 @@
 [project]
 name = "mechlab"
-version = "0.2.3"
+version = "0.2.4"
 description = "Computational Mechanical Engineering Toolkit"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -66,7 +66,7 @@ Repository = "https://github.com/sewaksunar/mechlab.git"
 Issues = "https://github.com/sewaksunar/mechlab/issues"
 
 [project.scripts]
-mechlab = "mechlab.cli:main"
+mechlab = "mechlab.cli.__main__:main"
 dev = "scripts:docs_dev"
 
 # -----------------------------
