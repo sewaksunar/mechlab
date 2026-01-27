@@ -6,9 +6,9 @@ __pycache__/
 dist/
 build/
 .poetry/
-./pdf
-./png
-./html
+*.pdf
+*.png
+*.html
 
 
 mechlab-docs/
