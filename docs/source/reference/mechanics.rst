@@ -30,7 +30,9 @@ Static Analysis
    :members:
    :no-index:
 
-
+.. autoclass:: mechlab.mechanics.StaticsParticle
+  :members:
+  :no-index:
 
 Rigid Body Dynamics
 -------------------

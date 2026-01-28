@@ -1,5 +1,5 @@
 from .dynamics import RigidBody
-from .statics import Beam
+from .statics import Beam, StaticsParticle
 from .statics.stress import StressTensor3D, StressTransform, PrincipalStresses
 
 __all__ = [
@@ -7,5 +7,6 @@ __all__ = [
     "Beam", 
     "StressTensor3D", 
     "StressTransform", 
-    "PrincipalStresses"
+    "PrincipalStresses",
+    "StaticsParticle",
 ]
