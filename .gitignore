@@ -13,7 +13,7 @@ build/
 # Common binary/doc formats
 *.pdf
 *.png
-
+DEVLOG.md
 # Ignore HTML everywhere except docs
 *.html
 !mechlab-docs/**/*.html
