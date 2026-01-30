@@ -48,6 +48,8 @@ uv pip install mechlab
 
 ## Quick Start
 
+### Thermodynamics
+
 ```python
 from mechlab.thermodynamics import enthalpy_TP
 
@@ -56,8 +58,21 @@ h = enthalpy_TP(
     T=500,        # Temperature [K]
     P=3e6         # Pressure [Pa]
 )
-
 print(f"Enthalpy: {h:.2f} J/kg")
+```
+
+### Stress Analysis
+
+```python
+from mechlab.mechanics import StressState
+
+# Create stress state
+state = StressState(sx=100, sy=50, txy=30, unit="MPa")
+
+# Get results
+results = state.results()
+print(f"Principal stress σ₁: {results['sigma_1']:.2f} MPa")
+print(f"Von Mises stress: {results['von_mises']:.2f} MPa")
 ```
 
 ---
@@ -66,26 +81,23 @@ print(f"Enthalpy: {h:.2f} J/kg")
 
 ```text
 mechlab/
-│
-├── examples/              # Runnable example scripts
-├── api.py                  # High-level API helpers
-├── cli/                    # CLI entrypoints and subcommands
-├── core/                   # Core math + unit helpers
-├── display/                # Text/LaTeX/interactive display
-├── export/                 # CSV/PDF export helpers
-├── interactive/            # Jupyter widgets
-├── math/                   # Math utilities
-├── mechanics/              # Mechanics models
+├── cli/                    # Command-line interface
+├── core/                   # Base classes and unit conversions
+├── display/                # Text and LaTeX output utilities
+├── export/                 # CSV and PDF export tools
+├── interactive/            # Jupyter notebook widgets
+├── math/                   # Core engineering calculations
+├── mechanics/              # Mechanics analysis
+│   ├── beam.py             # Beam analysis
 │   ├── stress.py           # Plane stress utilities
-│   ├── statics/            # Statics models
+│   ├── statics/            # Static analysis models
 │   └── dynamics/           # Dynamics models
-├── thermodynamics/         # Thermodynamics utilities
-├── units/                  # Unit registry + conversions
-├── utils/                  # Environment + misc helpers
+├── thermodynamics/         # Thermodynamic calculations
+├── units/                  # Unit registry and conversions
+├── utils/                  # Environment detection utilities
 ├── visual/                 # Visualizations and animations
 └── __init__.py
 ```
-
 
 ## Dependencies
 
@@ -149,17 +161,33 @@ pytest
 
 ---
 
-## CLI Troubleshooting (Windows)
+## Command Line Interface
 
-If `mechlab` is not recognized, ensure the project is installed and prefer:
+MechLab includes a powerful CLI for quick calculations:
+
+```bash
+# Run interactive shell
+mechlab shell
+
+# System check
+mechlab doctor
+
+# Math calculations
+mechlab math stress 1000 0.05  # stress = force / area
+
+# Stress analysis
+mechlab stress compute --sx 100 --sy 50 --txy 30
+mechlab stress show --sx 100 --sy 50 --txy 30
+
+# Beam analysis
+mechlab beam compute --L 5 --P 1000 --E 200e9 --I 1e-6
+```
+
+**Troubleshooting (Windows):** If `mechlab` is not recognized, use:
 
 ```bash
 uv run mechlab
-```
-
-Or:
-
-```bash
+# or
 uv run python -m mechlab
 ```
 
@@ -180,7 +208,6 @@ Please follow:
 * Clear docstrings
 * Basic tests for new features
 
----
 ---
 
 ## Documentation
