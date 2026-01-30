@@ -1,10 +1,14 @@
+"""CLI commands for stress analysis."""
+
 from mechlab.cli.common import get_flag, get_str
 from mechlab.mechanics.stress import StressState
 from mechlab.visual.stress_interactive import StressInteractive
 from mechlab.visual.stress_export import StressAnimationExporter
 from mechlab.export.csv_export import export_csv
 
+
 def compute_stress(sx, sy, txy, csv_file=None):
+    """Compute and display stress analysis results."""
     state = StressState(sx, sy, txy)
     results = state.results()
 
@@ -22,11 +26,13 @@ def compute_stress(sx, sy, txy, csv_file=None):
 
 
 def show_stress(sx, sy, txy):
+    """Display interactive stress visualization."""
     gui = StressInteractive(sx, sy, txy)
     gui.show()
 
 
 def export_stress(sx, sy, txy, mp4=None, gif=None):
+    """Export stress animation to MP4 or GIF."""
     exporter = StressAnimationExporter(sx, sy, txy)
 
     if mp4:

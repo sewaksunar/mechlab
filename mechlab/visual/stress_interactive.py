@@ -1,8 +1,12 @@
+"""Interactive stress transformation visualization."""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button
 
+
 class StressInteractive:
+    """Interactive stress transformation viewer with animation."""
     def __init__(self, sx, sy, txy):
         self.sx = sx
         self.sy = sy

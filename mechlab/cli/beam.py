@@ -1,8 +1,12 @@
+"""CLI commands for beam analysis."""
+
 from mechlab.cli.common import get_flag
 from mechlab.mechanics.beam import SimplySupportedBeam
 from mechlab.visual.beam_plot import BeamPlot
 
+
 def run_beam(rest):
+    """Execute beam analysis command."""
     if not rest:
         print("Usage: mechlab beam [compute|show]")
         return

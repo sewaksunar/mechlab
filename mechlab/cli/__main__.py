@@ -1,3 +1,5 @@
+"""Main CLI entry point for MechLab."""
+
 import sys
 
 from mechlab.cli.doctor import run_doctor

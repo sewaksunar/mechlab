@@ -1,9 +1,12 @@
-# mechlab/visual/stress_gui.py
+"""Interactive GUI for stress visualization."""
+
 import math
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 
+
 class StressGUI:
+    """Interactive principal stress viewer with sliders."""
     def __init__(self, sx, sy, txy):
         self.sx, self.sy, self.txy = sx, sy, txy
 

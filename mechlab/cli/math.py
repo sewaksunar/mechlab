@@ -1,3 +1,5 @@
+"""CLI commands for mathematical calculations."""
+
 from rich.console import Console
 from rich.table import Table
 
@@ -13,6 +15,7 @@ console = Console()
 
 
 def run_math(args):
+    """Execute math calculation command."""
     if not args or args[0] == "list":
         _list_math()
         return

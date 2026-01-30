@@ -1,8 +1,12 @@
+"""Stress animation export utilities."""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+
 class StressAnimationExporter:
+    """Export stress transformation animations to MP4 or GIF."""
     def __init__(self, sx, sy, txy):
         self.sx = sx
         self.sy = sy
