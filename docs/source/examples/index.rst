@@ -1,24 +1,22 @@
 Examples
 ========
 
-.. rubric:: Practical demonstrations of MechLab in action
+Worked examples demonstrating real engineering workflows.
 
-This section provides worked examples that show how to apply MechLab’s modules
-to real engineering problems. Each example highlights both the symbolic and
-numerical workflows, bridging theory with implementation.
+Each example shows how to apply MechLab's modules to practical problems,
+combining symbolic and numerical computation with clear outputs.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Example Library
 
-   ../tutorials/quickstart
-   ../tutorials/branch/mechanics
+   plane_stress
+   stress_transform
 
----
+**Runnable Scripts**
 
-### Cross‑References
+All examples are available as scripts in the ``examples/`` folder:
 
-For deeper study, see:
+.. code-block:: bash
 
-- :doc:`../tutorials/index` — step‑by‑step learning resources
-- :doc:`../reference/index` — detailed API documentation
+   uv run python examples/plane_stress.py
+   uv run python examples/stress_transform.py

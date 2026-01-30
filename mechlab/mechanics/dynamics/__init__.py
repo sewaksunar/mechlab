@@ -1,3 +1,5 @@
+"""Dynamics: motion analysis and rigid body dynamics."""
+
 r""""Dynamics of Particles"""
 class DynamicsOfParticle:
     r"""

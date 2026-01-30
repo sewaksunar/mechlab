@@ -1,19 +1,41 @@
+from mechlab.cli.common import get_flag, get_str
 from mechlab.mechanics.stress import StressState
 from mechlab.visual.stress_interactive import StressInteractive
 from mechlab.visual.stress_export import StressAnimationExporter
 from mechlab.export.csv_export import export_csv
 
-def _get_flag(rest, name, default=None, cast=float):
-    if name in rest:
-        idx = rest.index(name)
-        return cast(rest[idx + 1])
-    return default
+def compute_stress(sx, sy, txy, csv_file=None):
+    state = StressState(sx, sy, txy)
+    results = state.results()
 
-def _get_str(rest, name):
-    if name in rest:
-        idx = rest.index(name)
-        return rest[idx + 1]
-    return None
+    for k, v in results.items():
+        if isinstance(v, (int, float)):
+            print(f"{k} = {v:.3f}")
+        else:
+            print(f"{k} = {v}")
+
+    if csv_file:
+        export_csv(results, csv_file)
+        print(f"✔ CSV exported → {csv_file}")
+
+    return results
+
+
+def show_stress(sx, sy, txy):
+    gui = StressInteractive(sx, sy, txy)
+    gui.show()
+
+
+def export_stress(sx, sy, txy, mp4=None, gif=None):
+    exporter = StressAnimationExporter(sx, sy, txy)
+
+    if mp4:
+        exporter.export_mp4(mp4)
+    elif gif:
+        exporter.export_gif(gif)
+    else:
+        print("❌ Use --mp4 <file> or --gif <file>")
+
 
 def run_stress(rest):
     if not rest:
@@ -22,42 +44,22 @@ def run_stress(rest):
 
     subcmd, *args = rest
 
-    sx = _get_flag(args, "--sx")
-    sy = _get_flag(args, "--sy")
-    txy = _get_flag(args, "--txy")
+    sx = get_flag(args, "--sx")
+    sy = get_flag(args, "--sy")
+    txy = get_flag(args, "--txy")
 
     if sx is None or sy is None or txy is None:
         print("❌ Missing required arguments: --sx --sy --txy")
         return
 
     if subcmd == "compute":
-        state = StressState(sx, sy, txy)
-        results = state.results()
-
-        for k, v in results.items():
-            print(f"{k} = {v:.3f}")
-
-        csv_file = _get_str(args, "--csv")
-        if csv_file:
-            export_csv(results, csv_file)
-            print(f"✔ CSV exported → {csv_file}")
-
+        csv_file = get_str(args, "--csv")
+        compute_stress(sx, sy, txy, csv_file)
     elif subcmd == "show":
-        gui = StressInteractive(sx, sy, txy)
-        gui.show()
-
+        show_stress(sx, sy, txy)
     elif subcmd == "export":
-        exporter = StressAnimationExporter(sx, sy, txy)
-
-        mp4 = _get_str(args, "--mp4")
-        gif = _get_str(args, "--gif")
-
-        if mp4:
-            exporter.export_mp4(mp4)
-        elif gif:
-            exporter.export_gif(gif)
-        else:
-            print("❌ Use --mp4 <file> or --gif <file>")
-
+        mp4 = get_str(args, "--mp4")
+        gif = get_str(args, "--gif")
+        export_stress(sx, sy, txy, mp4=mp4, gif=gif)
     else:
         print(f"Unknown stress command: {subcmd}")

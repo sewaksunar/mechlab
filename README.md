@@ -67,35 +67,22 @@ print(f"Enthalpy: {h:.2f} J/kg")
 ```text
 mechlab/
 │
-├── mechanics/
-│   ├── __init__.py
-│   ├── statics/
-│   │   ├── stress.py
-│   │   └── strain.py
-│   └── dynamics/
-│       ├── linear_motion.py
-│       ├── rectilinear_motion.py
-│       └── motion_3d.py
-│
-├── mscience/              # Material science
-│
-├── thermodynamics/
-│   ├── __init__.py
-│   ├── properties.py
-│   └── cycles.py
-│
-├── fluid_mechanics/
-│   ├── __init__.py
-│   └── dimensionless.py
-│
-├── control_systems/
-│   ├── __init__.py
-│   └── linear.py
-│
-├── utils/
-│   ├── __init__.py
-│   └── constants.py
-│
+├── examples/              # Runnable example scripts
+├── api.py                  # High-level API helpers
+├── cli/                    # CLI entrypoints and subcommands
+├── core/                   # Core math + unit helpers
+├── display/                # Text/LaTeX/interactive display
+├── export/                 # CSV/PDF export helpers
+├── interactive/            # Jupyter widgets
+├── math/                   # Math utilities
+├── mechanics/              # Mechanics models
+│   ├── stress.py           # Plane stress utilities
+│   ├── statics/            # Statics models
+│   └── dynamics/           # Dynamics models
+├── thermodynamics/         # Thermodynamics utilities
+├── units/                  # Unit registry + conversions
+├── utils/                  # Environment + misc helpers
+├── visual/                 # Visualizations and animations
 └── __init__.py
 ```
 
@@ -158,6 +145,22 @@ Run tests:
 
 ```bash
 pytest
+```
+
+---
+
+## CLI Troubleshooting (Windows)
+
+If `mechlab` is not recognized, ensure the project is installed and prefer:
+
+```bash
+uv run mechlab
+```
+
+Or:
+
+```bash
+uv run python -m mechlab
 ```
 
 ---

@@ -34,6 +34,25 @@ Static Analysis
   :members:
   :no-index:
 
+Stress Analysis
+---------------
+
+.. autoclass:: mechlab.mechanics.StressState
+  :members:
+  :no-index:
+
+.. autoclass:: mechlab.mechanics.StressTensor3D
+  :members:
+  :no-index:
+
+.. autoclass:: mechlab.mechanics.StressTransform
+  :members:
+  :no-index:
+
+.. autoclass:: mechlab.mechanics.PrincipalStresses
+  :members:
+  :no-index:
+
 Rigid Body Dynamics
 -------------------
 

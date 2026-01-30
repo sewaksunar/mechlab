@@ -4,6 +4,8 @@ Engineering Guides
 .. toctree::
    :maxdepth: 1
 
+   project-structure
+
 Best Practices for Units
 ------------------------
 Always define your constants at the top of your script. While MechLab handles the math, maintaining unit consistency in your inputs is vital.

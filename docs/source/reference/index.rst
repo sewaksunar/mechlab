@@ -1,7 +1,10 @@
 API Reference
 =============
 
-This section documents all public modules and submodules of MechLab.
+Complete reference for all public modules and classes.
+
+Use this section to look up functions, classes, and methods with full signatures
+and docstrings.
 
 .. toctree::
    :maxdepth: 2

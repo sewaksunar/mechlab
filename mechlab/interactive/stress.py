@@ -1,15 +1,11 @@
-import sympy as sp
 import ipywidgets as w
 from IPython.display import display, clear_output
 
 from mechlab.mechanics.stress import StressState
-from mechlab.display.latex import show
 
 
 def stress_state_widget():
-    """
-    Interactive widget for plane stress state.
-    """
+    """Interactive widget for plane stress state."""
 
     # Input widgets
     sigma_x = w.FloatSlider(

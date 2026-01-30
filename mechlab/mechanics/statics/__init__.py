@@ -1,3 +1,5 @@
+"""Statics: equilibrium analysis of rigid bodies and structures."""
+
 import sympy as sp
 from sympy.vector import CoordSys3D
 

@@ -97,9 +97,6 @@ docs = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-# added later
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
 
 [project.optional-dependencies]
 interactive = ["ipython", "ipywidgets", "matplotlib"]
