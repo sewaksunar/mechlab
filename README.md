@@ -143,7 +143,7 @@ Create a virtual environment and install dependencies with **uv**:
 
 ```bash
 uv venv
-uv pip install -e .
+uv sync
 ```
 
 Build documentation:
@@ -156,7 +156,9 @@ uv run sphinx-build source build
 Run tests:
 
 ```bash
-pytest
+uv run pytest tests/
+# or
+.venv/Scripts/python -m pytest tests/
 ```
 
 ---
