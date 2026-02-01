@@ -10,3 +10,8 @@ and docstrings.
    :maxdepth: 2
 
    mechanics
+   units
+   output
+   visual
+   math
+   thermodynamics

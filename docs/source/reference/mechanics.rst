@@ -10,7 +10,7 @@ Mechanics
      - **Dynamics (RigidBody)**
    * - **Primary Goal**
      - Deformation & Stress
-     - Equilibrium & Weight
+     - Motion & Forces
    * - **Key Variable**
      - $I$ (Inertia)
      - $m$ (Mass)
@@ -19,12 +19,16 @@ Mechanics
      - Newton's Second Law ($F=ma$)
    * - **Main Output**
      - Deflection ($\delta$)
-     - Weight ($W$)
+     - Acceleration ($a$)
 
 ---
 
 Static Analysis
 ---------------
+
+.. autoclass:: mechlab.mechanics.SimplySupportedBeam
+  :members:
+  :no-index:
 
 .. autoclass:: mechlab.mechanics.Beam
    :members:
@@ -59,3 +63,7 @@ Rigid Body Dynamics
 .. autoclass:: mechlab.mechanics.RigidBody
    :members:
    :no-index:
+
+.. autoclass:: mechlab.mechanics.DynamicsOfParticle
+  :members:
+  :no-index:

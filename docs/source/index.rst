@@ -6,7 +6,7 @@ MechLab
 MechLab is an open-source Python library for **symbolic and numerical mechanical
 engineering computation**. It provides a clean, engineering-focused API for:
 
-`mechanics` · `thermodynamics` · `fluid mechanics` · `control systems`
+`mechanics` · `thermodynamics` · `units` · `visualization` · `output` · `cli`
 
 ---
 
