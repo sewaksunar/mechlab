@@ -1,7 +1,5 @@
 """PDF export utilities for analysis results.
 
-Provides functions to export engineering analysis results to PDF format.
-
 Requires: reportlab
 """
 
@@ -12,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 
 
@@ -53,7 +50,7 @@ def export_pdf(
     y = height - 110
 
     for key, value in results.items():
-        if y < 50:  # New page if needed
+        if y < 50:
             c.showPage()
             c.setFont("Helvetica", 11)
             y = height - 50

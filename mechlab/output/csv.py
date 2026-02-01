@@ -1,7 +1,4 @@
-"""CSV export utilities for analysis results.
-
-Provides functions to export engineering analysis results to CSV format.
-"""
+"""CSV export utilities for analysis results."""
 
 from __future__ import annotations
 
@@ -54,10 +51,6 @@ def export_csv_table(
         data: List of dictionaries with consistent keys
         filename: Output CSV filename or path
         fieldnames: Column names (defaults to keys from first row)
-
-    Example:
-        >>> data = [{'x': 0, 'stress': 100}, {'x': 1, 'stress': 150}]
-        >>> export_csv_table(data, 'stress_profile.csv')
     """
     if not data:
         return

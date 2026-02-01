@@ -1,0 +1,272 @@
+"""Interactive stress visualization with matplotlib.
+
+Provides a unified stress viewer with:
+  - Sliders for σx, σy, τxy
+  - Unit selection (MPa, GPa, psi)
+  - Real-time principal stress calculation
+  - Mohr's circle visualization
+  - Animation playback
+"""
+
+from __future__ import annotations
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider, Button, RadioButtons
+
+
+class StressViewer:
+    """
+    Interactive stress transformation viewer with matplotlib.
+
+    Combines stress analysis, Mohr's circle, and animation in one viewer.
+
+    Attributes:
+        sx: Normal stress in x-direction
+        sy: Normal stress in y-direction
+        txy: Shear stress
+        unit: Stress unit (default: MPa)
+
+    Example:
+        >>> from mechlab.visual import StressViewer
+        >>> viewer = StressViewer(100, 50, 25)
+        >>> viewer.show()
+    """
+
+    def __init__(
+        self,
+        sx: float = 100,
+        sy: float = 50,
+        txy: float = 25,
+        unit: str = "MPa",
+    ) -> None:
+        """
+        Initialize stress viewer.
+
+        Args:
+            sx: Normal stress in x-direction
+            sy: Normal stress in y-direction
+            txy: Shear stress
+            unit: Stress unit
+        """
+        self.sx = sx
+        self.sy = sy
+        self.txy = txy
+        self.unit = unit
+        
+        self.theta = 0.0
+        self.running = False
+        self.sigma_path = []
+        self.tau_path = []
+        
+        self._setup_figure()
+        self._setup_sliders()
+        self._setup_controls()
+        self._update(None)
+
+    def _setup_figure(self) -> None:
+        """Create figure with subplots."""
+        self.fig = plt.figure(figsize=(12, 5))
+        
+        # Results text panel
+        self.ax_text = self.fig.add_axes([0.02, 0.4, 0.2, 0.5])
+        self.ax_text.axis("off")
+        self.text = self.ax_text.text(0, 0.9, "", fontfamily="monospace", 
+                                       fontsize=10, verticalalignment="top")
+        
+        # Mohr's circle
+        self.ax_mohr = self.fig.add_axes([0.3, 0.35, 0.35, 0.6])
+        self.ax_mohr.set_aspect("equal")
+        self.ax_mohr.grid(True, alpha=0.3)
+        self.ax_mohr.set_xlabel("σ (Normal Stress)")
+        self.ax_mohr.set_ylabel("τ (Shear Stress)")
+        self.ax_mohr.set_title("Mohr's Circle")
+        
+        # Stress path
+        self.ax_path = self.fig.add_axes([0.72, 0.35, 0.25, 0.6])
+        self.ax_path.grid(True, alpha=0.3)
+        self.ax_path.set_xlabel("σ")
+        self.ax_path.set_ylabel("τ")
+        self.ax_path.set_title("Transformation Path")
+        
+        self.line_path, = self.ax_path.plot([], [], "b-", lw=1.5)
+        self.point_path, = self.ax_path.plot([], [], "ro", ms=8)
+
+    def _setup_sliders(self) -> None:
+        """Create input sliders."""
+        slider_color = "lightblue"
+        
+        ax_sx = self.fig.add_axes([0.3, 0.22, 0.4, 0.03])
+        ax_sy = self.fig.add_axes([0.3, 0.15, 0.4, 0.03])
+        ax_txy = self.fig.add_axes([0.3, 0.08, 0.4, 0.03])
+        
+        self.slider_sx = Slider(ax_sx, "σx", -500, 500, valinit=self.sx, color=slider_color)
+        self.slider_sy = Slider(ax_sy, "σy", -500, 500, valinit=self.sy, color=slider_color)
+        self.slider_txy = Slider(ax_txy, "τxy", -500, 500, valinit=self.txy, color=slider_color)
+        
+        for slider in (self.slider_sx, self.slider_sy, self.slider_txy):
+            slider.on_changed(self._update)
+        
+        # Unit selector
+        ax_unit = self.fig.add_axes([0.02, 0.08, 0.12, 0.2])
+        self.radio_unit = RadioButtons(ax_unit, ("MPa", "GPa", "psi"))
+        self.radio_unit.on_clicked(self._on_unit_change)
+
+    def _setup_controls(self) -> None:
+        """Create animation controls."""
+        ax_theta = self.fig.add_axes([0.78, 0.15, 0.18, 0.03])
+        self.slider_theta = Slider(ax_theta, "θ", 0, 360, valinit=0, color="lightgreen")
+        self.slider_theta.on_changed(self._on_theta_change)
+        
+        ax_play = self.fig.add_axes([0.78, 0.08, 0.08, 0.04])
+        ax_reset = self.fig.add_axes([0.88, 0.08, 0.08, 0.04])
+        
+        self.btn_play = Button(ax_play, "▶ Play")
+        self.btn_reset = Button(ax_reset, "↺ Reset")
+        
+        self.btn_play.on_clicked(self._toggle_animation)
+        self.btn_reset.on_clicked(self._reset_path)
+        
+        self.timer = self.fig.canvas.new_timer(interval=50)
+        self.timer.add_callback(self._animate)
+
+    def _calculate(self) -> dict:
+        """Calculate all stress values."""
+        sx, sy, txy = self.sx, self.sy, self.txy
+        
+        # Center and radius
+        center = (sx + sy) / 2
+        radius = np.sqrt(((sx - sy) / 2) ** 2 + txy ** 2)
+        
+        # Principal stresses
+        s1 = center + radius
+        s2 = center - radius
+        
+        # Max shear
+        tau_max = radius
+        
+        # Von Mises
+        vm = np.sqrt(sx**2 - sx*sy + sy**2 + 3*txy**2)
+        
+        # Transformed stresses at theta
+        theta_rad = np.radians(self.theta)
+        sigma_t = center + radius * np.cos(2 * theta_rad)
+        tau_t = -radius * np.sin(2 * theta_rad)
+        
+        return {
+            "center": center,
+            "radius": radius,
+            "s1": s1,
+            "s2": s2,
+            "tau_max": tau_max,
+            "vm": vm,
+            "sigma_t": sigma_t,
+            "tau_t": tau_t,
+        }
+
+    def _update(self, val) -> None:
+        """Update all displays."""
+        self.sx = self.slider_sx.val
+        self.sy = self.slider_sy.val
+        self.txy = self.slider_txy.val
+        
+        calc = self._calculate()
+        
+        # Update text
+        self.text.set_text(
+            f"Input ({self.unit}):\n"
+            f"  σx  = {self.sx:>8.1f}\n"
+            f"  σy  = {self.sy:>8.1f}\n"
+            f"  τxy = {self.txy:>8.1f}\n\n"
+            f"Principal:\n"
+            f"  σ1  = {calc['s1']:>8.1f}\n"
+            f"  σ2  = {calc['s2']:>8.1f}\n\n"
+            f"Max Shear:\n"
+            f"  τmax= {calc['tau_max']:>8.1f}\n\n"
+            f"Von Mises:\n"
+            f"  σvm = {calc['vm']:>8.1f}"
+        )
+        
+        # Update Mohr's circle
+        self.ax_mohr.clear()
+        self.ax_mohr.set_aspect("equal")
+        self.ax_mohr.grid(True, alpha=0.3)
+        self.ax_mohr.set_xlabel(f"σ ({self.unit})")
+        self.ax_mohr.set_ylabel(f"τ ({self.unit})")
+        self.ax_mohr.set_title("Mohr's Circle")
+        
+        # Draw circle
+        theta_circle = np.linspace(0, 2*np.pi, 100)
+        x_circle = calc['center'] + calc['radius'] * np.cos(theta_circle)
+        y_circle = calc['radius'] * np.sin(theta_circle)
+        self.ax_mohr.plot(x_circle, y_circle, "b-", lw=2)
+        
+        # Draw points
+        self.ax_mohr.plot(calc['center'], 0, "ko", ms=6, label="Center")
+        self.ax_mohr.plot(calc['s1'], 0, "g^", ms=10, label=f"σ1={calc['s1']:.1f}")
+        self.ax_mohr.plot(calc['s2'], 0, "rv", ms=10, label=f"σ2={calc['s2']:.1f}")
+        self.ax_mohr.plot(calc['sigma_t'], calc['tau_t'], "mo", ms=10, label=f"θ={self.theta:.0f}°")
+        
+        self.ax_mohr.axhline(y=0, color='k', linewidth=0.5)
+        self.ax_mohr.axvline(x=0, color='k', linewidth=0.5)
+        self.ax_mohr.legend(loc="upper right", fontsize=8)
+        
+        # Update transformation path
+        margin = calc['radius'] * 0.3 + 50
+        self.ax_path.set_xlim(calc['center'] - calc['radius'] - margin,
+                              calc['center'] + calc['radius'] + margin)
+        self.ax_path.set_ylim(-calc['radius'] - margin, calc['radius'] + margin)
+        
+        self.fig.canvas.draw_idle()
+
+    def _on_unit_change(self, label: str) -> None:
+        """Handle unit selection change."""
+        self.unit = label
+        self._update(None)
+
+    def _on_theta_change(self, val: float) -> None:
+        """Handle theta slider change."""
+        self.theta = val
+        calc = self._calculate()
+        
+        self.sigma_path.append(calc['sigma_t'])
+        self.tau_path.append(calc['tau_t'])
+        
+        self.line_path.set_data(self.sigma_path, self.tau_path)
+        self.point_path.set_data([calc['sigma_t']], [calc['tau_t']])
+        
+        self._update(None)
+
+    def _toggle_animation(self, event) -> None:
+        """Toggle animation playback."""
+        self.running = not self.running
+        self.btn_play.label.set_text("⏸ Pause" if self.running else "▶ Play")
+        
+        if self.running:
+            self.timer.start()
+        else:
+            self.timer.stop()
+
+    def _animate(self) -> None:
+        """Animation step."""
+        self.theta = (self.theta + 2) % 360
+        self.slider_theta.set_val(self.theta)
+
+    def _reset_path(self, event) -> None:
+        """Reset transformation path."""
+        self.sigma_path.clear()
+        self.tau_path.clear()
+        self.theta = 0
+        self.slider_theta.set_val(0)
+        self.line_path.set_data([], [])
+        self.point_path.set_data([], [])
+        self.fig.canvas.draw_idle()
+
+    def show(self) -> None:
+        """Display the interactive viewer."""
+        plt.show()
+
+    def save(self, filename: str = "stress_viewer.png", dpi: int = 150) -> None:
+        """Save current view to file."""
+        self.fig.savefig(filename, dpi=dpi, bbox_inches="tight")
+        print(f"✔ Saved to {filename}")

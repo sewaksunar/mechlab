@@ -133,14 +133,47 @@ mechlab/
 
 1. **Single Source of Truth**: Core logic lives in one place, reused by CLI/widgets/exports
 2. **Clear Exports**: Every `__init__.py` has `__all__` and a docstring
-3. **Lazy-Loading**: Optional dependencies don't block imports
+3. **Lazy-Loading**: Optional dependencies don't block imports (ipywidgets, reportlab)
 4. **No Circular Imports**: Careful dependency ordering
 5. **Documented Structure**: Project structure guide + inline docstrings
 6. **Tested & Validated**: All tests pass, docs build cleanly, package builds
+7. **Type Hints**: All public APIs have type annotations
+8. **Professional CLI**: Consistent help messages, error handling, and workflow
+
+## CLI Commands
+
+```bash
+# Get help
+mechlab --help
+mechlab stress --help
+mechlab beam --help
+
+# Stress analysis
+mechlab stress compute --sx 100 --sy 50 --txy 25
+mechlab stress compute --sx 100 --sy 50 --txy 25 --csv results.csv
+mechlab stress show --sx 100 --sy 50 --txy 25
+mechlab stress export --sx 100 --sy 50 --txy 25 --gif stress.gif
+
+# Beam analysis
+mechlab beam compute --L 5 --P 1000 --E 200e9 --I 1e-4
+mechlab beam show --L 5 --P 1000 --E 200e9 --I 1e-4
+
+# Unit conversion
+mechlab units list
+mechlab units convert 100 MPa psi
+
+# Math functions
+mechlab math list
+mechlab math stress 1000 0.01
+
+# System check
+mechlab doctor
+mechlab doctor --verbose
+```
 
 ## Next Steps (Optional)
 
 - Add unit tests for each module (currently only smoke tests)
-- Document CLI usage in guides section
 - Set up GitHub Pages for hosted docs
-- Consider splitting into sub-packages (e.g., `mechlab-mechanics`, `mechlab-thermo`)
+- Add more beam types (cantilever, continuous)
+- Add thermal stress analysis
