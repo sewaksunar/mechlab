@@ -10,6 +10,18 @@ Defines conversion factors to SI base units:
 from __future__ import annotations
 
 UNITS: dict[str, dict[str, float]] = {
+    """Unit registry organized by physical quantity.
+    
+    Each category maps unit names to conversion factors (multiply by factor to get SI base unit).
+    
+    Categories:
+        - length: meter (m)
+        - force: newton (N) 
+        - pressure: pascal (Pa)
+        - mass: kilogram (kg)
+        - area: square meter (m²)
+        - moment: newton-meter (N⋅m)
+    """
     "length": {
         "m": 1.0,
         "mm": 1e-3,
@@ -60,13 +72,44 @@ UNITS: dict[str, dict[str, float]] = {
 
 # Alias for stress units (flat dict for backward compatibility)
 STRESS_UNITS: dict[str, float] = UNITS["pressure"]
+"""Stress unit conversion factors to Pascal (Pa).
+
+Available units:
+    - Pa: Pascal (SI base unit)
+    - kPa: kilopascal 
+    - MPa: megapascal
+    - GPa: gigapascal
+    - bar: bar
+    - psi: pounds per square inch
+    - ksi: kips per square inch
+
+Example:
+    >>> STRESS_UNITS['MPa']
+    1000000.0
+"""
 
 
 def to_base(value: float, unit: str) -> float:
-    """Convert stress value to base unit (Pascal)."""
+    """Convert stress value to base unit (Pascal).
+    
+    Args:
+        value: Stress value in specified unit
+        unit: Unit name
+        
+    Returns:
+        Stress value in Pascals
+    """
     return value * STRESS_UNITS[unit]
 
 
 def from_base(value: float, unit: str) -> float:
-    """Convert stress value from base unit (Pascal) to specified unit."""
+    """Convert stress value from base unit (Pascal) to specified unit.
+    
+    Args:
+        value: Stress value in Pascals  
+        unit: Target unit name
+        
+    Returns:
+        Stress value in target unit
+    """
     return value / STRESS_UNITS[unit]

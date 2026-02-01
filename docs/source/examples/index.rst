@@ -12,11 +12,19 @@ combining symbolic and numerical computation with clear outputs.
    plane_stress
    stress_transform
 
-**Runnable Scripts**
+Running Examples
+----------------
 
 All examples are available as scripts in the ``examples/`` folder:
 
 .. code-block:: bash
 
-   uv run python examples/plane_stress.py
-   uv run python examples/stress_transform.py
+   python examples/plane_stress.py
+   python examples/stress_transform.py
+
+Or use the CLI for quick calculations:
+
+.. code-block:: bash
+
+   mechlab stress compute --sx 100 --sy 50 --txy 25
+   mechlab units convert 100 MPa psi

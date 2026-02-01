@@ -1,18 +1,13 @@
 Installation
 ============
 
-MechLab is designed to be lightweight and modular. We strongly recommend using a
-virtual environment (via Poetry or venv) to ensure your engineering dependencies
-remain isolated and stable.
+MechLab requires Python 3.8+ and can be installed via pip.
 
 Prerequisites
 -------------
 
-Before installing, ensure your system meets these requirements:
-
-* **Python:** 3.13.5 or higher
+* **Python:** 3.8 or higher
 * **Operating System:** Windows, macOS, or Linux
-* **Core Libraries:** NumPy, SciPy (installed automatically)
 
 Installation Methods
 --------------------
@@ -21,20 +16,10 @@ Choose the method that best fits your workflow.
 
 .. tab-set::
 
-   .. tab-item:: 📦 UV (Recommended)
-      :sync: uv
-
-      Use this for reproducible engineering projects. UV ensures your dependency
-      tree is locked.
-
-      .. code-block:: bash
-
-         uv add mechlab
-
-   .. tab-item:: 🐍 Pip
+   .. tab-item:: 📦 Pip (Recommended)
       :sync: pip
 
-      Ideal for simple scripts, Jupyter Notebooks, or Google Colab environments.
+      Ideal for most users and environments.
 
       .. code-block:: bash
 
@@ -43,25 +28,56 @@ Choose the method that best fits your workflow.
    .. tab-item:: 🏗️ From Source
       :sync: source
 
-      Best for contributors or those needing the "bleeding edge" version.
+      Best for contributors or those needing the latest features.
 
       .. code-block:: bash
 
          git clone https://github.com/sewaksunar/mechlab.git
          cd mechlab
+         pip install -e .
+         cd mechlab
 
+
+Dependencies
+------------
+
+**Core dependencies** (automatically installed):
+
+- ``numpy`` - Numerical computations
+- ``rich`` - Terminal output formatting
+- ``matplotlib`` - Plotting and visualization
+
+**Optional dependencies** (for specific features):
+
+.. code-block:: bash
+
+   # For PDF export
+   pip install reportlab
+
+   # For Jupyter widgets
+   pip install ipywidgets
 
 Verify Installation
 -------------------
 
-To confirm that the mechanics and thermodynamics engines are correctly linked,
-run the following command in your terminal:
+Test your installation:
 
 .. code-block:: bash
 
+   # CLI check
+   mechlab --version
+   mechlab doctor
+
+   # Python check
    python -c "import mechlab; print(f'MechLab {mechlab.__version__} successfully initialized.')"
 
 .. tip::
 
-   **Stuck?** If you encounter issues with NumPy or SciPy binaries on Windows,
-   ensure you have the Microsoft Visual C++ Redistributable installed.
+   **Stuck?** If you encounter issues, try using a fresh virtual environment:
+   
+   .. code-block:: bash
+   
+      python -m venv mechlab_env
+      # Windows: mechlab_env\\Scripts\\activate
+      # Linux/Mac: source mechlab_env/bin/activate
+      pip install mechlab

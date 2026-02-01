@@ -17,7 +17,7 @@ Example:
 from .stress import StressState
 from .beam import SimplySupportedBeam
 from .statics import Beam, StaticsParticle, StressTensor3D, StressTransform, PrincipalStresses
-from .dynamics import RigidBody
+from .dynamics import RigidBody, DynamicsOfParticle
 
 __all__ = [
     # Stress analysis
@@ -32,4 +32,5 @@ __all__ = [
     "StaticsParticle",
     # Dynamics
     "RigidBody",
+    "DynamicsOfParticle",
 ]

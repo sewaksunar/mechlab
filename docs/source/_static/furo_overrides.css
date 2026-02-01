@@ -1,0 +1,144 @@
+/* === MechLab Documentation Custom Styles === */
+
+/* Hero section styling */
+.hero-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  margin: 2rem 0;
+  text-align: center;
+  border: 1px solid var(--color-background-border);
+}
+
+.hero-section h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-description {
+  font-size: 1.25rem;
+  color: var(--color-foreground-secondary);
+  margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.hero-features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.feature-tag {
+  background: var(--color-brand-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+[data-theme="dark"] .hero-section {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+
+
+/* Improve code blocks */
+.highlight {
+  border-radius: 8px;
+  border: 1px solid var(--color-background-border);
+  overflow: hidden;
+}
+
+.highlight pre {
+  padding: 1.5rem;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Better spacing for sections */
+.section {
+  margin-bottom: 3rem;
+}
+
+/* Improve navigation items */
+.bd-sidebar .caption-text {
+  font-weight: 600;
+  color: var(--color-brand-primary);
+  font-size: 0.95rem;
+}
+
+.bd-sidebar .toctree-l1 > a {
+  font-weight: 500;
+  padding: 0.5rem 0;
+}
+
+/* Add subtle animations */
+.bd-sidebar a {
+  transition: all 0.2s ease;
+}
+
+.bd-sidebar a:hover {
+  transform: translateX(2px);
+}
+
+/* Improve table styling */
+table.docutils {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid var(--color-background-border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+table.docutils th {
+  background: var(--color-background-secondary);
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-background-border);
+}
+
+table.docutils td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-background-border);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1199px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-description {
+    font-size: 1.1rem;
+  }
+  
+  .hero-features {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem 1.5rem;
+  }
+  
+  .hero-section h1 {
+    font-size: 1.75rem;
+  }
+  
+  .hero-features {
+    flex-direction: column;
+    align-items: center;
+  }
+}
