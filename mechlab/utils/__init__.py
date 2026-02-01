@@ -1,5 +1,9 @@
-"""Utility helpers and environment management."""
+"""Utility helpers and environment detection.
 
-from .env import get_env
+Provides:
+  - is_jupyter(): Check if running in Jupyter environment
+"""
 
-__all__ = ["get_env"]
+from .env import is_jupyter
+
+__all__ = ["is_jupyter"]

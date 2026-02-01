@@ -60,7 +60,7 @@ def compute_stress(
         Dictionary of computed results
     """
     from mechlab.mechanics.stress import StressState
-    from mechlab.export.csv_export import export_csv
+    from mechlab.output import export_csv
 
     state = StressState(sx, sy, txy)
     results = state.results()
@@ -95,10 +95,10 @@ def show_stress(sx: float, sy: float, txy: float) -> None:
         sy: Normal stress in y-direction
         txy: Shear stress
     """
-    from mechlab.visual.stress_interactive import StressInteractive
+    from mechlab.visual import StressViewer
 
-    gui = StressInteractive(sx, sy, txy)
-    gui.show()
+    viewer = StressViewer(sx, sy, txy)
+    viewer.show()
 
 
 def export_stress(
@@ -118,14 +118,14 @@ def export_stress(
         mp4: Output MP4 filename
         gif: Output GIF filename
     """
-    from mechlab.visual.stress_export import StressAnimationExporter
+    from mechlab.visual import StressAnimation
 
-    exporter = StressAnimationExporter(sx, sy, txy)
+    anim = StressAnimation(sx, sy, txy)
 
     if mp4:
-        exporter.export_mp4(mp4)
+        anim.save_mp4(mp4)
     elif gif:
-        exporter.export_gif(gif)
+        anim.save_gif(gif)
     else:
         print_error("Specify output format: --mp4 <file> or --gif <file>")
 

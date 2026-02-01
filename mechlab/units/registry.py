@@ -57,3 +57,16 @@ UNITS: dict[str, dict[str, float]] = {
         "lbf_in": 0.112985,
     },
 }
+
+# Alias for stress units (flat dict for backward compatibility)
+STRESS_UNITS: dict[str, float] = UNITS["pressure"]
+
+
+def to_base(value: float, unit: str) -> float:
+    """Convert stress value to base unit (Pascal)."""
+    return value * STRESS_UNITS[unit]
+
+
+def from_base(value: float, unit: str) -> float:
+    """Convert stress value from base unit (Pascal) to specified unit."""
+    return value / STRESS_UNITS[unit]

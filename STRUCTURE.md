@@ -1,19 +1,30 @@
 # Library Organization Summary
 
-## Completed Restructuring
+## Design Principles
 
-### 1. **Module Organization**
-All core modules now have proper `__init__.py` files with clear docstrings and public API exports:
+1. **Single Source of Truth** – Each concept lives in one place only
+2. **No Redundancy** – No duplicate code or overlapping modules
+3. **Flat Structure** – Minimal nesting, direct imports
+4. **Lazy Loading** – Optional dependencies don't block imports
+5. **Clear Exports** – Every `__init__.py` has `__all__` and docstrings
+6. **Type Hints** – All public APIs have annotations
+7. **Backward Compatible** – Old module names work with deprecation warnings
 
-- **mechlab.core**: Math utilities, unit conversion (exports: `to_base`, `from_base`, `STRESS_UNITS`)
-- **mechlab.display**: Text and LaTeX visualization (exports: `show_stress_text`)
-- **mechlab.export**: CSV/PDF export with lazy-loading for PDF (exports: `export_csv`, `export_pdf`)
-- **mechlab.math**: Math functions (exports: `stress`, `strain`, `youngs_modulus`, `pressure`, `MathError`)
-- **mechlab.units**: Unit registry and conversion (exports: `UNITS`, `convert`, `UnitError`)
-- **mechlab.mechanics**: Statics, dynamics, stress (exports: `RigidBody`, `Beam`, `StressState`, `StressTensor3D`, `StressTransform`, `PrincipalStresses`, `StaticsParticle`)
-- **mechlab.thermodynamics**: Thermodynamic properties and cycles (exports: `State`)
-- **mechlab.interactive**: Jupyter widgets with lazy-loading (exports: `stress_state_widget`)
-- **mechlab.visual**: Visualizations and animations (exports: `BeamPlot`, `StressRotationAnimation`, `StressAnimationExporter`, `StressGUI`, `StressInteractive`)
+## Module Overview
+
+| Module | Purpose | Key Exports |
+|--------|---------|-------------|
+| `mechlab.mechanics` | Stress & structural analysis | `StressState`, `SimplySupportedBeam`, `Beam` |
+| `mechlab.units` | Unit conversion (single source) | `UNITS`, `convert`, `STRESS_UNITS` |
+| `mechlab.output` | Text display + file export | `print_stress`, `export_csv`, `export_pdf` |
+| `mechlab.visual` | GUI, animations, Jupyter widgets | `StressViewer`, `StressAnimation`, `BeamPlot` |
+| `mechlab.thermodynamics` | Thermodynamic properties | `State` |
+| `mechlab.math` | Basic engineering formulas | `stress`, `strain`, `youngs_modulus` |
+| `mechlab.core` | Base classes (re-exports units) | `EngineeringBase`, `STRESS_UNITS` |
+| `mechlab.utils` | Environment helpers | `is_jupyter` |
+| `mechlab.cli` | Command-line interface | (internal) |
+
+> **Deprecated**: `display`, `export`, `interactive` → use `output` and `visual` instead
 
 ### 2. **Unified Code**
 - Single `StressState` implementation in `mechlab.mechanics.stress`
@@ -52,93 +63,100 @@ All core modules now have proper `__init__.py` files with clear docstrings and p
 
 ```
 mechlab/
-├── mechlab/
-│   ├── __init__.py               # Main package with all submodules
-│   ├── __main__.py               # python -m mechlab entry
-│   ├── api.py                    # High-level API
-│   ├── core/
-│   │   ├── __init__.py           # Math utilities + units
-│   │   ├── units.py
-│   │   └── stress.py             # Re-exports
-│   ├── cli/
+├── __init__.py          # Package entry, lazy deprecation warnings
+├── __main__.py          # python -m mechlab entry
+├── api.py               # High-level API (stress function)
+│
+├── mechanics/           # Core engineering calculations
+│   ├── __init__.py      # Exports all classes
+│   ├── stress.py        # StressState (plane stress)
+│   ├── beam.py          # SimplySupportedBeam
+│   ├── statics/         # Particle/beam statics, 3D tensors
 │   │   ├── __init__.py
-│   │   ├── __main__.py           # Primary entrypoint
-│   │   ├── main.py               # Backward-compat shim
-│   │   ├── common.py             # Shared flag utilities
-│   │   ├── stress.py
-│   │   ├── beam.py
-│   │   └── ...
-│   ├── mechanics/
-│   │   ├── __init__.py           # Clear exports
-│   │   ├── stress.py             # Main implementation
-│   │   ├── statics/
-│   │   │   ├── __init__.py       # Docstring + exports
-│   │   │   └── stress.py
-│   │   └── dynamics/
-│   │       ├── __init__.py       # Docstring + exports
-│   ├── display/
-│   │   ├── __init__.py
-│   │   ├── text.py
-│   │   ├── latex.py
-│   │   └── ...
-│   ├── export/
-│   │   ├── __init__.py           # Lazy-loads PDF
-│   │   ├── csv_export.py
-│   │   └── pdf_export.py
-│   ├── interactive/
-│   │   ├── __init__.py           # Lazy-loads ipywidgets
-│   │   └── stress.py
-│   ├── math/
-│   │   ├── __init__.py
-│   │   └── core.py
-│   ├── thermodynamics/
-│   │   ├── __init__.py
-│   │   ├── state.py
-│   │   └── example_run.py        # Removed from test discovery
-│   ├── units/
-│   │   ├── __init__.py
-│   │   ├── registry.py
-│   │   └── convert.py
-│   ├── utils/
-│   │   ├── __init__.py
-│   │   └── env.py
-│   └── visual/
-│       ├── __init__.py           # Clear exports
-│       ├── beam_plot.py
-│       ├── stress_animation.py
-│       ├── stress_export.py
-│       └── ...
-├── examples/
+│   │   └── stress.py    # StressTensor3D, PrincipalStresses
+│   └── dynamics/        # RigidBody dynamics
+│       └── __init__.py
+│
+├── units/               # SINGLE source for all unit handling
+│   ├── __init__.py      # Exports UNITS, convert, STRESS_UNITS
+│   ├── registry.py      # Unit definitions + to_base/from_base
+│   └── convert.py       # convert() function
+│
+├── output/              # Display & export (merged from display+export)
 │   ├── __init__.py
-│   ├── plane_stress.py
-│   ├── stress_transform.py
-│   └── README.md
-├── tests/
-│   ├── test_smoke.py             # 2 passing tests
-├── docs/
-│   └── source/
-│       ├── index.rst             # Reorganized main index
-│       ├── examples/
-│       │   ├── index.rst
-│       │   ├── plane_stress.rst
-│       │   └── stress_transform.rst
-│       ├── tutorials/
-│       ├── guides/
-│       │   └── project-structure.rst
-│       └── reference/
-└── pyproject.toml
+│   ├── text.py          # print_stress, print_beam, print_results
+│   ├── csv.py           # export_csv
+│   └── pdf.py           # export_pdf (lazy-loaded)
+│
+├── visual/              # Visualization (merged from visual+interactive)
+│   ├── __init__.py      # Lazy-loaded exports
+│   ├── viewer.py        # StressViewer (Mohr's circle GUI)
+│   ├── animation.py     # StressAnimation
+│   ├── beam.py          # BeamPlot
+│   └── widgets.py       # stress_widget (Jupyter)
+│
+├── thermodynamics/      # Thermo properties
+│   ├── __init__.py
+│   ├── state.py
+│   ├── properties.py
+│   └── cycle.py
+│
+├── math/                # Basic formulas
+│   ├── __init__.py
+│   └── core.py          # stress, strain, youngs_modulus
+│
+├── core/                # Base classes (re-exports units)
+│   ├── __init__.py
+│   └── base.py          # EngineeringBase, Number
+│
+├── utils/               # Helpers
+│   ├── __init__.py
+│   └── env.py           # is_jupyter()
+│
+└── cli/                 # Command-line interface
+    ├── __init__.py
+    ├── __main__.py      # Main entry
+    ├── common.py        # Shared utilities
+    ├── stress.py
+    ├── beam.py
+    ├── units.py
+    ├── math.py
+    ├── doctor.py
+    └── shell.py
 ```
 
 ## Key Design Principles Applied
 
-1. **Single Source of Truth**: Core logic lives in one place, reused by CLI/widgets/exports
-2. **Clear Exports**: Every `__init__.py` has `__all__` and a docstring
-3. **Lazy-Loading**: Optional dependencies don't block imports (ipywidgets, reportlab)
-4. **No Circular Imports**: Careful dependency ordering
-5. **Documented Structure**: Project structure guide + inline docstrings
-6. **Tested & Validated**: All tests pass, docs build cleanly, package builds
-7. **Type Hints**: All public APIs have type annotations
-8. **Professional CLI**: Consistent help messages, error handling, and workflow
+1. **Single Source of Truth**: All unit logic in `mechlab.units`, re-exported by `core`
+2. **No Duplications**: Merged 6 visual/display files into 4 consolidated ones
+3. **Clear Exports**: Every `__init__.py` has `__all__` and a docstring
+4. **Lazy-Loading**: Optional dependencies don't block imports (ipywidgets, reportlab)
+5. **Minimal Nesting**: Mechanics submodules kept flat where possible
+6. **Type Hints**: All public APIs have type annotations
+7. **Backward Compatibility**: Old module names work with deprecation warnings
+
+## Quick Reference
+
+```python
+# Stress analysis
+from mechlab.mechanics import StressState
+state = StressState(100, 50, 25)  # σx, σy, τxy in MPa
+state.principal()                  # → (110.35, 39.65)
+state.von_mises()                  # → 96.82
+
+# Unit conversion
+from mechlab.units import convert
+convert(100, 'MPa', 'psi')         # → 14503.77
+
+# Output
+from mechlab.output import print_stress, export_csv
+print_stress(state)
+export_csv(state.results(), 'out.csv')
+
+# Visualization
+from mechlab.visual import StressViewer
+StressViewer(100, 50, 25).show()
+```
 
 ## CLI Commands
 

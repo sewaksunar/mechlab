@@ -76,7 +76,7 @@ def run_beam(args: list[str]) -> None:
         print()
 
     elif subcommand == "show":
-        from mechlab.visual.beam_plot import BeamPlot
+        from mechlab.visual import BeamPlot
         BeamPlot(beam).show()
 
     else:

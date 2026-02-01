@@ -1,5 +1,15 @@
-"""Core mathematical and unit utilities."""
+"""Core utilities: base classes and unit helpers.
 
-from .units import to_base, from_base, STRESS_UNITS
+Re-exports unit functions from mechlab.units for backward compatibility.
+"""
 
-__all__ = ["to_base", "from_base", "STRESS_UNITS"]
+from mechlab.units import STRESS_UNITS, to_base, from_base
+from .base import EngineeringBase, Number
+
+__all__ = [
+    "STRESS_UNITS",
+    "to_base",
+    "from_base",
+    "EngineeringBase",
+    "Number",
+]

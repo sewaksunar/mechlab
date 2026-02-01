@@ -6,7 +6,7 @@ Centralized stress-state calculations used by CLI, widgets, and API.
 from __future__ import annotations
 
 import math
-from mechlab.core.units import STRESS_UNITS, from_base, to_base
+from mechlab.units import STRESS_UNITS, from_base, to_base
 
 
 class StressState:

@@ -48,30 +48,24 @@ def stress(
     state = StressState(sx, sy, txy, unit)
 
     if mode == "interactive":
-        from mechlab.display.interactive import interactive_stress
-        interactive_stress()
+        from mechlab.visual import StressViewer
+        viewer = StressViewer(sx, sy, txy, unit)
+        viewer.show()
         return None
 
     results = state.results(unit)
 
     # Display results
-    print()
-    print("Stress Analysis Results")
-    print("-" * 35)
-    for key, value in results.items():
-        if isinstance(value, (int, float)):
-            print(f"  {key:>12} = {value:>12.3f}")
-        elif value is not None:
-            print(f"  {key:>12} = {value}")
-    print()
+    from mechlab.output import print_stress
+    print_stress(state)
 
     # Export if requested
     if export == "csv":
-        from mechlab.export.csv_export import export_csv
+        from mechlab.output import export_csv
         export_csv(results, "stress_results.csv")
         print("✔ Exported to stress_results.csv")
     elif export == "pdf":
-        from mechlab.export.pdf_export import export_pdf
+        from mechlab.output import export_pdf
         export_pdf(results, "stress_results.pdf")
         print("✔ Exported to stress_results.pdf")
 
