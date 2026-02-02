@@ -5,6 +5,8 @@ Defines conversion factors to SI base units:
   - Force: newton (N)
   - Pressure: pascal (Pa)
   - Mass: kilogram (kg)
+  - Area: square meter (m²)
+  - Volume: cubic meter (m³)
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ UNITS: dict[str, dict[str, float]] = {
         - pressure: pascal (Pa)
         - mass: kilogram (kg)
         - area: square meter (m²)
+        - volume: cubic meter (m³)
         - moment: newton-meter (N⋅m)
     """
     "length": {
@@ -67,6 +70,15 @@ UNITS: dict[str, dict[str, float]] = {
         "kNm": 1e3,
         "lbf_ft": 1.35582,
         "lbf_in": 0.112985,
+    },
+    "volume": {
+        "m3": 1.0,
+        "cm3": 1e-6,
+        "mm3": 1e-9,
+        "L": 1e-3,
+        "mL": 1e-6,
+        "ft3": 0.0283168,
+        "in3": 1.63871e-5,
     },
 }
 
