@@ -15,6 +15,12 @@ print("Stress transfomation example:")
 transform = StressTransfomation(1000, 1500, 2000, 10, 15, 20, 30)
 print("Transformed Stress Tensor:", transform.transformed_stress())
 
+# Mohr's circle save example
+out_file = 'mohr_xy_example.png'
+sate.save_mohr_circle(out_file, plane='xy')
+import os
+print(f"Mohr plot saved to: {out_file} -> Exists: {os.path.exists(out_file)}")
+
 # The state of stress at a point in a machine part is given by:
 # σxx = 10, σyy = 30, σzz = 15, and σxy = σxz = σyz = 0
 # Determine the principal stresses and orientation of the principal axes at the point.
@@ -24,3 +30,6 @@ print("\nPrincipal Stresses Example:")
 principal_stress = StressTensor(10, 30, 15, 7.5, 0, 0)
 print("Principal Stresses (N/m^2):", principal_stress.principal_stresses())
 print("Principal Stress Directions:", principal_stress.principal_directions())
+
+# make mohr's circle
+print("\nMohr's Circle Example:")

@@ -1,6 +1,7 @@
 """DEFINITION OF STRESS AT A POINT"""
 import sympy as sp
 import numpy as np
+import matplotlib.pyplot as plt
 
 class Stress:
     """Class representing normal stress components at a point.
@@ -89,6 +90,157 @@ class StressTensor(Stress):
         return np.array([[sigma[0], tau[0], tau[2]],
                          [tau[0], sigma[1], tau[1]],
                          [tau[2], tau[1], sigma[2]]])
+
+    def mohr_circle(self, plane: str = 'xy') -> dict:
+        r"""Compute Mohr's circle parameters for a given in-plane stress (2D).
+
+        Args:
+            plane: one of 'xy', 'yz', or 'zx' indicating which plane to use.
+
+        Returns:
+            dict with keys: 'center', 'radius', 'sigma1', 'sigma2', 'angle_rad',
+            'sigma_x', 'sigma_y', 'tau_xy'
+        """
+        if plane == 'xy':
+            sigma_x = self.stress_tensor()[0, 0]
+            sigma_y = self.stress_tensor()[1, 1]
+            tau = self.stress_tensor()[0, 1]
+        elif plane == 'yz':
+            sigma_x = self.stress_tensor()[1, 1]
+            sigma_y = self.stress_tensor()[2, 2]
+            tau = self.stress_tensor()[1, 2]
+        elif plane == 'zx' or plane == 'xz':
+            sigma_x = self.stress_tensor()[2, 2]
+            sigma_y = self.stress_tensor()[0, 0]
+            tau = self.stress_tensor()[2, 0]
+        else:
+            raise ValueError("plane must be one of 'xy', 'yz', 'zx'")
+
+        center = 0.5 * (sigma_x + sigma_y)
+        radius = np.sqrt(((sigma_x - sigma_y) / 2.0) ** 2 + tau ** 2)
+        sigma1 = center + radius
+        sigma2 = center - radius
+        angle_rad = 0.5 * np.arctan2(2.0 * tau, (sigma_x - sigma_y))
+        return {
+            'center': center,
+            'radius': radius,
+            'sigma1': sigma1,
+            'sigma2': sigma2,
+            'angle_rad': angle_rad,
+            'sigma_x': sigma_x,
+            'sigma_y': sigma_y,
+            'tau_xy': tau,
+        }
+
+    def mohr_circle_points(self, plane: str = 'xy', n_points: int = 128) -> tuple[np.ndarray, np.ndarray]:
+        """Return arrays (sigma_vals, tau_vals) for plotting Mohr's circle."""
+        params = self.mohr_circle(plane)
+        theta = np.linspace(0, 2 * np.pi, n_points)
+        sigma_vals = params['center'] + params['radius'] * np.cos(theta)
+        tau_vals = params['radius'] * np.sin(theta)
+        return sigma_vals, tau_vals
+
+    def plot_mohr_circle(self, plane: str = 'xy', ax=None, show: bool = True) -> 'matplotlib.axes.Axes':
+        """Plot Mohr's circle for the specified plane.
+
+        Requires matplotlib to be installed. Returns the Axes object.
+        """
+        import matplotlib.pyplot as plt
+
+        sigma_vals, tau_vals = self.mohr_circle_points(plane)
+        params = self.mohr_circle(plane)
+
+        if ax is None:
+            fig, ax = plt.subplots()
+        ax.plot(sigma_vals, tau_vals, label="Mohr's circle")
+        ax.axhline(0, color='k', linewidth=0.5)
+        # Mark principal stresses
+        ax.plot([params['sigma1'], params['sigma2']], [0, 0], 'ro', label='Principal stresses')
+        # Mark original stress points
+        ax.plot([params['sigma_x']], [params['tau_xy']], 'bx', label=f"(σx, τ)={params['sigma_x'], params['tau_xy']}")
+        ax.plot([params['sigma_y']], [-params['tau_xy']], 'gx', label=f"(σy, -τ)={params['sigma_y'], -params['tau_xy']}")
+        ax.set_xlabel('Normal stress (σ)')
+        ax.set_ylabel('Shear stress (τ)')
+        ax.set_aspect('equal', 'box')
+        ax.legend()
+        if show:
+            plt.show()
+        return ax
+
+    def save_mohr_circle(self, filename: str, plane: str = 'xy', dpi: int = 150) -> None:
+        """Save Mohr's circle plot to a file.
+
+        Args:
+            filename: Path to save the figure (supports formats matplotlib accepts).
+            plane: Plane to use ('xy', 'yz', 'zx').
+            dpi: Dots per inch for saved figure.
+        """
+        import matplotlib.pyplot as plt
+        ax = self.plot_mohr_circle(plane=plane, ax=None, show=False)
+        fig = ax.get_figure()
+        fig.savefig(filename, dpi=dpi, bbox_inches='tight')
+        plt.close(fig)
+
+    def plot_principal_mohr(self, ax=None, show: bool = True, filename: str | None = None) -> 'matplotlib.axes.Axes':
+        """Plot the three principal Mohr circles (σ1-σ2, σ2-σ3, σ3-σ1).
+
+        Args:
+            ax: Optional matplotlib Axes to draw on.
+            show: If True, display the figure with plt.show().
+            filename: If provided, save the figure to this path and do not show.
+
+        Returns:
+            The matplotlib Axes containing the plot.
+        """
+        import matplotlib
+        import matplotlib.pyplot as plt
+
+        # Use a non-interactive backend when saving to file or when running in headless
+        if filename is not None:
+            matplotlib.use('Agg')
+
+        prin = self.principal_stresses()
+        pairs = [ (0,1), (1,2), (2,0) ]
+
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(6,6))
+        colors = ['C0','C1','C2']
+        max_sigma = np.max(prin)
+        min_sigma = np.min(prin)
+        all_centers = []
+        all_radii = []
+        for (a,b), c in zip(pairs, colors):
+            center = 0.5*(prin[a]+prin[b])
+            radius = abs(prin[a]-prin[b])/2.0
+            theta = np.linspace(0, 2*np.pi, 400)
+            sigma_vals = center + radius * np.cos(theta)
+            tau_vals = radius * np.sin(theta)
+            ax.plot(sigma_vals, tau_vals, color=c, label=f'σ{a+1}-σ{b+1}')
+            ax.plot([prin[a], prin[b]], [0,0], 'o', color=c)
+            all_centers.append(center)
+            all_radii.append(radius)
+        ax.set_xlabel('Normal stress (σ)')
+        ax.set_ylabel('Shear stress (τ)')
+        ax.set_aspect('equal', 'box')
+        ax.legend()
+        # Set limits to include all circles with some margin
+        left = min(all_centers[i]-all_radii[i] for i in range(len(all_centers)))
+        right = max(all_centers[i]+all_radii[i] for i in range(len(all_centers)))
+        margin = 0.1*(right-left)
+        ax.set_xlim(left-margin, right+margin)
+        ax.set_ylim(- (max(all_radii)+margin), (max(all_radii)+margin))
+
+        if filename is not None:
+            fig = ax.get_figure()
+            fig.savefig(filename, dpi=150, bbox_inches='tight')
+            plt.close(fig)
+            if show:
+                print(f"Saved principal Mohr circles to: {filename}")
+            return ax
+
+        if show:
+            plt.show()
+        return ax
 
     def traction_stress(self, nx, ny=None, nz=None) -> np.ndarray:
         r"""Compatibility method to compute traction/stress on a plane with normal ``n``.
@@ -328,3 +480,80 @@ class StressTransfomation:
         tau_max = (principal_stresses[0] - principal_stresses[2]) / 2.0
         return tau_max
     
+    def von_mises_stress(self) -> float:
+        r"""Compute the von Mises stress.
+
+        ..math: \sigma_v = \sqrt{\frac{1}{2}[(\sigma_1 - \sigma_2)^2 + (\sigma_2 - \sigma_3)^2 + (\sigma_3 - \sigma_1)^2]}
+
+        Returns:
+            Von Mises stress value.
+        """
+        principal_stresses = self.principle_stresses()
+        s1, s2, s3 = principal_stresses
+        von_mises = np.sqrt(0.5 * ((s1 - s2) ** 2 + (s2 - s3) ** 2 + (s3 - s1) ** 2))
+        return von_mises
+    
+    def mohr_circle_parameters(self) -> dict:
+        r"""Compute Mohr's circle parameters for 3D stress state.
+
+        Returns:
+            Dictionary containing:
+                - 'center': Center of the Mohr's circle (σ_avg)
+                - 'radius': Radius of the Mohr's circle (R)
+                - 'principal_stresses': Principal stresses (σ1, σ2, σ3)
+        """
+        principal_stresses = self.principle_stresses()
+        sigma_avg = np.mean(principal_stresses)
+        radius = max(abs(principal_stresses - sigma_avg))
+        return {
+            'center': sigma_avg,
+            'radius': radius,
+            'principal_stresses': principal_stresses
+        }
+    def mohr_circle_plot(self, num_points=100) -> dict:
+        r"""Generate points for Mohr's circle plot.
+
+        Args:
+            num_points: Number of points to generate on the circle.
+        Returns:
+            Dictionary with 'x' and 'y' arrays for the circle.
+        """
+        params = self.mohr_circle_parameters()
+        center = params['center']
+        radius = params['radius']
+        theta = np.linspace(0, 2 * np.pi, num_points)
+        x = center + radius * np.cos(theta)
+        y = radius * np.sin(theta)
+        return {'x': x, 'y': y, 'center': center, 'radius': radius}
+    def plot_mohr_circle(self, ax=None, show=True, **kwargs):
+        """
+        Plot Mohr's circle for the current stress state.
+
+        Args:
+            ax: Optional matplotlib Axes object. If None, creates a new figure.
+            show: If True, calls plt.show().
+            **kwargs: Additional keyword arguments passed to plt.plot.
+
+        Returns:
+            The matplotlib Axes object containing the plot.
+        """
+        params = self.mohr_circle_parameters()
+        circle = self.mohr_circle_plot()
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(6, 6))
+        ax.plot(circle['x'], circle['y'], label="Mohr's Circle", **kwargs)
+        # Plot principal stresses on the horizontal axis
+        for s in params['principal_stresses']:
+            ax.plot([s], [0], 'ro')
+            ax.annotate(f"{s:.2f}", (s, 0), textcoords="offset points", xytext=(0,10), ha='center')
+        # Plot center
+        ax.plot([params['center']], [0], 'bo', label='Center')
+        ax.set_xlabel('Normal Stress (σ)')
+        ax.set_ylabel('Shear Stress (τ)')
+        ax.set_title("Mohr's Circle")
+        ax.grid(True)
+        ax.set_aspect('equal', 'box')
+        ax.legend()
+        if show:
+            plt.show()
+        return ax

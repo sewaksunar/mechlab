@@ -67,3 +67,19 @@ def test_principal_directions_for_oblique_case():
         v = pd[:, i]
         exp = expected[:, i]
         assert np.allclose(v, exp, atol=1e-6) or np.allclose(v, -exp, atol=1e-6)
+
+
+def test_mohr_circle_basic():
+    s = StressTensor(10, 30, 15, 7.5, 0, 0)
+    mc = s.mohr_circle('xy')
+    # center = (10+30)/2 = 20, radius = sqrt(((10-30)/2)^2 + 7.5^2) = sqrt(100 + 56.25)=sqrt(156.25)=12.5
+    assert np.isclose(mc['center'], 20.0)
+    assert np.isclose(mc['radius'], 12.5)
+    assert np.allclose(sorted([mc['sigma1'], mc['sigma2']]), sorted([32.5, 7.5]))
+    # Check sampled points lie on circle
+    sigma_vals, tau_vals = s.mohr_circle_points('xy', n_points=16)
+    center = mc['center']
+    radius = mc['radius']
+    # pick a few points and check distance to center matches radius
+    for si, ti in zip(sigma_vals[::4], tau_vals[::4]):
+        assert np.isclose(np.hypot(si - center, ti), radius, atol=1e-7)
