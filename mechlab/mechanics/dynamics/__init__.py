@@ -1,110 +1,262 @@
 """Dynamics: motion analysis and rigid body dynamics.
 
 Provides:
+  - DynamicsOfParticle: Base particle motion (position, velocity, mass)
+  - Projectile: Ballistic trajectory under gravity
   - RigidBody: Point mass calculations
-  - DynamicsOfParticle: Particle motion (position, velocity, mass)
+
+All classes support the Animatable protocol for unified visualization.
+
+Example:
+    >>> from mechlab.mechanics.dynamics import Projectile
+    >>> from mechlab.visual import animate
+    >>> proj = Projectile(velocity=(20, 20, 0))
+    >>> anim = animate(proj)  # Auto-creates appropriate animator
+    >>> anim.preview()
 """
 
 from __future__ import annotations
+
 import math
+from typing import Tuple, Optional, Dict, Any
+
 import numpy as np
 import sympy as sp
 
-class DynamicsOfParticle:
-    """
-    Represents a particle in dynamics.
-    
-    Tracks position, velocity, and mass for kinematic calculations.
-    
+from mechlab.core.base import (
+    PhysicsObject,
+    PhysicsState,
+    AnimatableMixin,
+    ExportableMixin,
+    physics_registry,
+    Vector3D,
+)
+
+
+# =============================================================================
+# BASE PARTICLE CLASS
+# =============================================================================
+
+class DynamicsOfParticle(PhysicsObject, AnimatableMixin, ExportableMixin):
+    """Base class for particles in dynamics.
+
+    Tracks position, velocity, and mass. Provides foundation for
+    more specialized motion types (projectile, oscillator, etc.).
+
+    Implements Animatable protocol for unified visualization.
+
     Example:
         >>> p = DynamicsOfParticle(position=(0, 0, 0), velocity=(5, 0, 0), mass=10)
         >>> p.kinetic_energy()
         125.0
+        >>> p.speed
+        5.0
     """
 
     def __init__(
         self,
-        position: tuple[float, float, float],
-        velocity: tuple[float, float, float],
-        mass: float,
+        position: Vector3D = (0.0, 0.0, 0.0),
+        velocity: Vector3D = (0.0, 0.0, 0.0),
+        mass: float = 1.0,
     ) -> None:
-        self.position = position
-        self.velocity = velocity
-        self.mass = mass
+        super().__init__(position=position, velocity=velocity, mass=mass)
 
-    def kinetic_energy(self) -> float:
-        """Calculate kinetic energy: KE = ½mv²."""
-        vx, vy, vz = self.velocity
-        v_squared = vx**2 + vy**2 + vz**2
-        return 0.5 * self.mass * v_squared
+    def state_at_time(self, t: float) -> PhysicsState:
+        """Get state at time t (no acceleration for base particle)."""
+        return PhysicsState(
+            time=t,
+            position=self.position,
+            velocity=self.velocity,
+            acceleration=(0.0, 0.0, 0.0),
+        )
 
-class Projectile:
-    r"""Represents a projectile in motion.
-    Tracks position, velocity, mass, and computes trajectory under gravity.
+    def time_span(self) -> Tuple[float, float]:
+        """Return default time span (0 to 1 second)."""
+        return (0.0, 1.0)
+
+
+# =============================================================================
+# PROJECTILE CLASS
+# =============================================================================
+
+@physics_registry.register("projectile", category="dynamics", description="Ballistic motion under gravity")
+class Projectile(DynamicsOfParticle):
+    r"""Projectile motion under constant gravitational acceleration.
+
+    Inherits from DynamicsOfParticle and extends with ballistic trajectory
+    calculations. Fully compatible with the unified animation framework.
+
+    Attributes:
+        position: Initial position (x, y, z) in meters
+        velocity: Initial velocity (vx, vy, vz) in m/s
+        mass: Mass in kg
+        g: Gravitational acceleration (default: 9.81 m/s²)
+
     Example:
-        >>> proj = Projectile(position=(0, 0, 0), velocity=(10, 10, 0), mass=2)
+        >>> proj = Projectile(velocity=(20, 20, 0), mass=1.0)
         >>> proj.time_of_flight()
-        2.0408163265306123
-    Formulae used:
-        - Time of flight: ..math: \( t = \frac{2v_0 \sin(\theta)}{g} \)
-        - Range: ..math: \( R = \frac{v_0^2 \sin(2\theta)}{g} \)
+        4.077
+        >>> proj.max_height()
+        20.39
+        >>> proj.range()
+        81.55
+
+        # Animation
+        >>> from mechlab.visual import animate
+        >>> anim = animate(proj)
+        >>> anim.preview()
+
+    Physics:
+        - Time of flight: $t = \frac{2v_y}{g}$
+        - Range: $R = \frac{v_x \cdot 2v_y}{g}$
+        - Max height: $h = \frac{v_y^2}{2g}$
+        - Position: $\vec{r}(t) = \vec{r}_0 + \vec{v}_0 t - \frac{1}{2}g t^2 \hat{j}$
     """
+
     def __init__(
         self,
-        position: tuple[float, float, float],
-        velocity: tuple[float, float, float],
-        mass: float,
+        position: Vector3D = (0.0, 0.0, 0.0),
+        velocity: Vector3D = (0.0, 0.0, 0.0),
+        mass: float = 1.0,
+        g: float = 9.81,
     ) -> None:
-        self.position = position
-        self.velocity = velocity
-        self.mass = mass
-        self.g = 9.81  # Acceleration due to gravity (m/s²)
-    
-    def x_displacement(self) -> float:
-        """Calculate horizontal displacement."""
-        vx, _, _ = self.velocity
-        t_flight = self.time_of_flight()
-        return vx * t_flight
-    
-    def y_displacement(self) -> float:
-        """Calculate vertical displacement."""
-        _, vy, _ = self.velocity
-        t_flight = self.time_of_flight()
-        return vy * t_flight - 0.5 * self.g * t_flight**2
+        """Initialize projectile.
+
+        Args:
+            position: Initial position (x, y, z) in meters
+            velocity: Initial velocity (vx, vy, vz) in m/s
+            mass: Mass in kg
+            g: Gravitational acceleration (default: 9.81 m/s²)
+        """
+        super().__init__(position=position, velocity=velocity, mass=mass)
+        self.g = float(g)
 
     def time_of_flight(self) -> float:
-        """Calculate time of flight until projectile lands back to initial height."""
-        vx, vy, vz = self.velocity
-        v0 = (vx**2 + vy**2 + vz**2)**0.5
-        theta = math.asin(vy / v0)
-        return (2 * v0 * math.sin(theta)) / self.g
-    
+        """Time until projectile returns to launch height.
+
+        Returns:
+            Time in seconds
+        """
+        _, vy, _ = self.velocity
+        if vy <= 0:
+            return 0.0
+        return (2 * vy) / self.g
+
+    def time_span(self) -> Tuple[float, float]:
+        """Return valid time range for trajectory."""
+        return (0.0, self.time_of_flight())
+
     def range(self) -> float:
-        """Calculate horizontal range of the projectile."""
-        vx, vy, vz = self.velocity
-        v0 = (vx**2 + vy**2 + vz**2)**0.5
-        theta = math.asin(vy / v0)
-        return (v0**2 * math.sin(2 * theta)) / self.g
-    
-    def position_at_time(self, t: float) -> tuple[float, float, float]:
-        """Calculate position at time t."""
+        """Horizontal range of the projectile.
+
+        Returns:
+            Horizontal distance in meters
+        """
+        vx, vy, _ = self.velocity
+        if vy <= 0:
+            return 0.0
+        return vx * self.time_of_flight()
+
+    def max_height(self) -> float:
+        """Maximum height above launch point.
+
+        Returns:
+            Height in meters
+        """
+        _, vy, _ = self.velocity
+        if vy <= 0:
+            return 0.0
+        return (vy ** 2) / (2 * self.g)
+
+    def state_at_time(self, t: float) -> PhysicsState:
+        """Get complete physical state at time t.
+
+        Args:
+            t: Time in seconds
+
+        Returns:
+            PhysicsState with position, velocity, acceleration
+        """
+        pos = self.position_at_time(t)
+        vel = self.velocity_at_time(t)
+
+        return PhysicsState(
+            time=t,
+            position=pos,
+            velocity=vel,
+            acceleration=(0.0, -self.g, 0.0),
+            energy={
+                "kinetic": 0.5 * self.mass * sum(v**2 for v in vel),
+                "potential": self.mass * self.g * pos[1],
+            },
+        )
+
+    def position_at_time(self, t: float) -> Vector3D:
+        """Position vector at time t.
+
+        Args:
+            t: Time in seconds
+
+        Returns:
+            Position (x, y, z) in meters
+        """
         x0, y0, z0 = self.position
         vx, vy, vz = self.velocity
-        x_t = x0 + vx * t
-        y_t = y0 + vy * t - 0.5 * self.g * t**2
-        z_t = z0 + vz * t
-        return (x_t, y_t, z_t)
-    
-    def velocity_at_time(self, t: float) -> tuple[float, float, float]:
-        """Calculate velocity at time t."""
-        vx, vy, vz = self.velocity
-        vy_t = vy - self.g * t
-        return (vx, vy_t, vz)
+        return (
+            x0 + vx * t,
+            y0 + vy * t - 0.5 * self.g * t ** 2,
+            z0 + vz * t,
+        )
 
-class RigidBody:
-    """
-    Represents a point mass for dynamic calculations.
-    
+    def velocity_at_time(self, t: float) -> Vector3D:
+        """Velocity vector at time t.
+
+        Args:
+            t: Time in seconds
+
+        Returns:
+            Velocity (vx, vy, vz) in m/s
+        """
+        vx, vy, vz = self.velocity
+        return (vx, vy - self.g * t, vz)
+
+    def trajectory(
+        self,
+        num_points: Optional[int] = None,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Generate full trajectory arrays.
+
+        Args:
+            num_points: Number of points (default: 200)
+
+        Returns:
+            (t_array, positions[N,3], velocities[N,3])
+        """
+        n = num_points or self.DEFAULT_NUM_POINTS
+        t_max = self.time_of_flight()
+
+        if t_max <= 0:
+            return (
+                np.array([0.0]),
+                np.array([self.position]),
+                np.array([self.velocity]),
+            )
+
+        t_array = np.linspace(0, t_max, n)
+        positions = np.array([self.position_at_time(t) for t in t_array])
+        velocities = np.array([self.velocity_at_time(t) for t in t_array])
+
+        return t_array, positions, velocities
+
+
+# =============================================================================
+# RIGID BODY CLASS
+# =============================================================================
+
+@physics_registry.register("rigid_body", category="dynamics", description="Point mass")
+class RigidBody(PhysicsObject):
+    """Point mass for basic dynamic calculations.
+
     Example:
         >>> body = RigidBody(mass=10, position=(0, 0, 0))
         >>> body.weight()
@@ -114,14 +266,26 @@ class RigidBody:
     def __init__(
         self,
         mass: float,
-        position: tuple[float, float, float],
+        position: Vector3D = (0.0, 0.0, 0.0),
+        velocity: Vector3D = (0.0, 0.0, 0.0),
     ) -> None:
-        self.mass = mass
-        self.position = position
+        super().__init__(position=position, velocity=velocity, mass=mass)
 
     def weight(self, g: float = 9.81) -> float:
         """Calculate weight: W = mg."""
         return self.mass * g
 
+    def state_at_time(self, t: float) -> PhysicsState:
+        """Static body - state doesn't change."""
+        return PhysicsState(
+            time=t,
+            position=self.position,
+            velocity=self.velocity,
+            acceleration=(0.0, 0.0, 0.0),
+        )
 
-__all__ = ["RigidBody", "DynamicsOfParticle", "Projectile"]
+    def time_span(self) -> Tuple[float, float]:
+        return (0.0, 1.0)
+
+
+__all__ = ["DynamicsOfParticle", "Projectile", "RigidBody"]

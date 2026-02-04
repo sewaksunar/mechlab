@@ -1,197 +1,221 @@
-# Library Organization Summary
+# MechLab Library Structure
 
 ## Design Principles
 
 1. **Single Source of Truth** – Each concept lives in one place only
 2. **No Redundancy** – No duplicate code or overlapping modules
-3. **Flat Structure** – Minimal nesting, direct imports
-4. **Lazy Loading** – Optional dependencies don't block imports
-5. **Clear Exports** – Every `__init__.py` has `__all__` and docstrings
-6. **Type Hints** – All public APIs have annotations
-7. **Backward Compatible** – Old module names work with deprecation warnings
+3. **Registry Pattern** – Auto-discovery and factory creation for physics objects
+4. **Unified Animation** – One `animate()` function works with ANY physics object
+5. **Lazy Loading** – Optional dependencies don't block imports
+6. **Clear Exports** – Every `__init__.py` has `__all__` and docstrings
+7. **Type Hints** – All public APIs have annotations
+8. **Backward Compatible** – Old names work via aliases
 
 ## Module Overview
 
 | Module | Purpose | Key Exports |
 |--------|---------|-------------|
-| `mechlab.mechanics` | Stress & structural analysis | `StressState`, `SimplySupportedBeam`, `Beam` |
-| `mechlab.units` | Unit conversion (single source) | `UNITS`, `convert`, `STRESS_UNITS` |
+| `mechlab.core` | Base classes, registry, protocols | `PhysicsObject`, `Registry`, `Animatable`, `config` |
+| `mechlab.mechanics` | Stress, beams, dynamics | `StressState`, `Projectile`, `RigidBody` |
+| `mechlab.visual` | **Unified** animation & visualization | `animate`, `StressViewer`, `Projection` |
+| `mechlab.units` | Unit conversion (single source) | `UNITS`, `convert` |
 | `mechlab.output` | Text display + file export | `print_stress`, `export_csv`, `export_pdf` |
-| `mechlab.visual` | GUI, animations, Jupyter widgets | `StressViewer`, `StressAnimation`, `BeamPlot` |
-| `mechlab.thermodynamics` | Thermodynamic properties | `State` |
+| `mechlab.thermodynamics` | Thermodynamic properties | `State`, `Cycle` |
 | `mechlab.math` | Basic engineering formulas | `stress`, `strain`, `youngs_modulus` |
-| `mechlab.core` | Base classes (re-exports units) | `EngineeringBase`, `STRESS_UNITS` |
 | `mechlab.utils` | Environment helpers | `is_jupyter` |
 | `mechlab.cli` | Command-line interface | (internal) |
-
-> **Deprecated**: `display`, `export`, `interactive` → use `output` and `visual` instead
-
-### 2. **Unified Code**
-- Single `StressState` implementation in `mechlab.mechanics.stress`
-- Backward-compatible re-export in `mechlab.core.stress`
-- No duplicate stress workflows
-
-### 3. **CLI Organization**
-- Single entrypoint: `mechlab.cli.__main__.main()`
-- Shared utilities in `mechlab.cli.common` (flag parsing)
-- Individual command handlers for `stress`, `beam`, `units`, `math`, `doctor`, `shell`
-
-### 4. **Examples**
-- Organized in `examples/` folder with runnable scripts
-- `plane_stress.py`: Basic plane stress calculations
-- `stress_transform.py`: 3D symbolic and numeric transformations
-- Clear README with usage commands
-
-### 5. **Documentation**
-- **Main index**: Reorganized with "Getting Started", "Learning & Reference", "Contribute & Explore"
-- **API Reference**: Comprehensive mechanics reference
-- **Examples**: Now fully integrated with Sphinx documentation
-- **Guides**: Project structure guide explains modular design
-
-### 6. **Import Safety**
-- Lazy-loading for optional dependencies (`ipywidgets`, `reportlab`)
-- Clean import with no circular dependencies
-- All tests pass: `2 passed`
-
-### 7. **Package & Build**
-- ✅ Tests: 2/2 passing
-- ✅ Docs: Build succeeded (no warnings)
-- ✅ Package: `mechlab-0.2.4.tar.gz` and `.whl` built successfully
-- ✅ Metadata: All checks pass
 
 ## File Structure
 
 ```
 mechlab/
-├── __init__.py          # Package entry, lazy deprecation warnings
-├── __main__.py          # python -m mechlab entry
-├── api.py               # High-level API (stress function)
+├── __init__.py          # Package entry
+├── __main__.py          # python -m mechlab
+├── api.py               # High-level API
 │
-├── mechanics/           # Core engineering calculations
-│   ├── __init__.py      # Exports all classes
+├── core/                # Foundation (NEW: registry, protocols)
+│   ├── __init__.py
+│   └── base.py          # Registry, PhysicsObject, Animatable, config
+│
+├── mechanics/
+│   ├── __init__.py      # Exports StressState, beams
 │   ├── stress.py        # StressState (plane stress)
 │   ├── beam.py          # SimplySupportedBeam
-│   ├── statics/         # Particle/beam statics, 3D tensors
+│   ├── statics/
 │   │   ├── __init__.py
-│   │   └── stress.py    # StressTensor3D, PrincipalStresses
-│   └── dynamics/        # RigidBody dynamics
-│       └── __init__.py
+│   │   └── stress.py    # StressTensor3D, StressTransform
+│   └── dynamics/        # (NEW: unified with core)
+│       └── __init__.py  # DynamicsOfParticle, Projectile, RigidBody
 │
-├── units/               # SINGLE source for all unit handling
-│   ├── __init__.py      # Exports UNITS, convert, STRESS_UNITS
-│   ├── registry.py      # Unit definitions + to_base/from_base
-│   └── convert.py       # convert() function
-│
-├── output/              # Display & export (merged from display+export)
-│   ├── __init__.py
-│   ├── text.py          # print_stress, print_beam, print_results
-│   ├── csv.py           # export_csv
-│   └── pdf.py           # export_pdf (lazy-loaded)
-│
-├── visual/              # Visualization (merged from visual+interactive)
-│   ├── __init__.py      # Lazy-loaded exports
-│   ├── viewer.py        # StressViewer (Mohr's circle GUI)
-│   ├── animation.py     # StressAnimation
+├── visual/              # CONSOLIDATED (was 7 files → now 4)
+│   ├── __init__.py      # Lazy exports with aliases
+│   ├── animator.py      # BaseAnimator, PhysicsAnimator, animate(), Projection
+│   ├── viewer.py        # StressViewer, StressAnimation (merged)
 │   ├── beam.py          # BeamPlot
 │   └── widgets.py       # stress_widget (Jupyter)
 │
-├── thermodynamics/      # Thermo properties
+├── units/
+│   ├── __init__.py
+│   ├── registry.py      # Unit definitions
+│   └── convert.py       # convert() function
+│
+├── output/
+│   ├── __init__.py
+│   ├── text.py          # print_stress, print_results
+│   ├── csv.py           # export_csv
+│   └── pdf.py           # export_pdf
+│
+├── thermodynamics/
 │   ├── __init__.py
 │   ├── state.py
 │   ├── properties.py
 │   └── cycle.py
 │
-├── math/                # Basic formulas
+├── math/
 │   ├── __init__.py
-│   └── core.py          # stress, strain, youngs_modulus
+│   └── core.py          # Basic formulas
 │
-├── core/                # Base classes (re-exports units)
-│   ├── __init__.py
-│   └── base.py          # EngineeringBase, Number
-│
-├── utils/               # Helpers
+├── utils/
 │   ├── __init__.py
 │   └── env.py           # is_jupyter()
 │
-└── cli/                 # Command-line interface
+└── cli/
     ├── __init__.py
-    ├── __main__.py      # Main entry
-    ├── common.py        # Shared utilities
+    ├── __main__.py
+    ├── common.py
     ├── stress.py
     ├── beam.py
     ├── units.py
     ├── math.py
     ├── doctor.py
     └── shell.py
+
+examples/
+├── __init__.py
+├── demo.py              # Comprehensive demo (run this!)
+├── plane_stress.py      # Simple stress example
+├── stress_transform.py  # Symbolic 3D transformation
+└── units.py             # Unit conversion examples
+
+tests/
+└── test_smoke.py        # Basic import tests
 ```
 
-## Key Design Principles Applied
+## Architecture Highlights
 
-1. **Single Source of Truth**: All unit logic in `mechlab.units`, re-exported by `core`
-2. **No Duplications**: Merged 6 visual/display files into 4 consolidated ones
-3. **Clear Exports**: Every `__init__.py` has `__all__` and a docstring
-4. **Lazy-Loading**: Optional dependencies don't block imports (ipywidgets, reportlab)
-5. **Minimal Nesting**: Mechanics submodules kept flat where possible
-6. **Type Hints**: All public APIs have type annotations
-7. **Backward Compatibility**: Old module names work with deprecation warnings
+### 1. Registry Pattern
+```python
+from mechlab.core import physics_registry
+
+# Auto-discovery of registered classes
+physics_registry.list()  # ['projectile', 'rigid_body']
+
+# Factory creation
+proj = physics_registry.create("projectile", velocity=(20, 20, 0))
+```
+
+### 2. Unified Animation
+```python
+from mechlab.mechanics.dynamics import Projectile
+from mechlab.visual import animate
+
+# ONE function works with ANY Animatable object
+proj = Projectile(velocity=(20, 20, 0))
+anim = animate(proj)  # Auto-selects PhysicsAnimator
+anim.preview()        # Interactive display
+anim.save_gif("out.gif")  # Export
+```
+
+### 3. Protocol-Based Design
+```python
+from mechlab.core import Animatable
+
+# Any object implementing these methods works with animate()
+class MyPhysics:
+    def state_at_time(self, t: float) -> PhysicsState: ...
+    def time_span(self) -> tuple[float, float]: ...
+```
+
+### 4. Mixin Composition
+```python
+from mechlab.core import PhysicsObject, AnimatableMixin, ExportableMixin
+
+class Projectile(PhysicsObject, AnimatableMixin, ExportableMixin):
+    # Automatically gets: to_csv(), to_json(), trajectory(), etc.
+    pass
+```
 
 ## Quick Reference
 
 ```python
+# Projectile motion with animation
+from mechlab.mechanics.dynamics import Projectile
+from mechlab.visual import animate
+
+proj = Projectile(velocity=(20, 20, 0), mass=1.0)
+print(f"Range: {proj.range():.2f} m")
+anim = animate(proj)
+anim.save_gif("projectile.gif")
+
 # Stress analysis
 from mechlab.mechanics import StressState
-state = StressState(100, 50, 25)  # σx, σy, τxy in MPa
-state.principal()                  # → (110.35, 39.65)
-state.von_mises()                  # → 96.82
+state = StressState(100, 50, 25)  # MPa
+print(state.results())
+
+# Interactive stress viewer
+from mechlab.visual import StressViewer
+StressViewer(100, 50, 25).show()
+
+# 3D projection animation
+from mechlab.visual import animate_cube
+animate_cube(save="cube.gif")
 
 # Unit conversion
 from mechlab.units import convert
-convert(100, 'MPa', 'psi')         # → 14503.77
-
-# Output
-from mechlab.output import print_stress, export_csv
-print_stress(state)
-export_csv(state.results(), 'out.csv')
-
-# Visualization
-from mechlab.visual import StressViewer
-StressViewer(100, 50, 25).show()
+convert(100, 'MPa', 'psi')  # → 14503.77
 ```
 
 ## CLI Commands
 
 ```bash
-# Get help
-mechlab --help
-mechlab stress --help
-mechlab beam --help
-
-# Stress analysis
 mechlab stress compute --sx 100 --sy 50 --txy 25
-mechlab stress compute --sx 100 --sy 50 --txy 25 --csv results.csv
-mechlab stress show --sx 100 --sy 50 --txy 25
-mechlab stress export --sx 100 --sy 50 --txy 25 --gif stress.gif
-
-# Beam analysis
 mechlab beam compute --L 5 --P 1000 --E 200e9 --I 1e-4
-mechlab beam show --L 5 --P 1000 --E 200e9 --I 1e-4
-
-# Unit conversion
-mechlab units list
 mechlab units convert 100 MPa psi
-
-# Math functions
-mechlab math list
-mechlab math stress 1000 0.01
-
-# System check
 mechlab doctor
-mechlab doctor --verbose
 ```
 
-## Next Steps (Optional)
+## Files Removed (Cleanup)
 
-- Add unit tests for each module (currently only smoke tests)
-- Set up GitHub Pages for hosted docs
-- Add more beam types (cantilever, continuous)
-- Add thermal stress analysis
+The following redundant files were consolidated:
+- `visual/animation.py` → merged into `viewer.py`
+- `visual/projection.py` → merged into `animator.py`
+- `visual/projectile_animation.py` → replaced by `animator.py`
+- `test/mechanism.py`, `test/projectile.py` → removed (duplicates)
+- `examples/projectile_motion_example.py` → consolidated into `demo.py`
+
+## Adding New Physics Types
+
+To add a new animatable physics object:
+
+```python
+from mechlab.core import PhysicsObject, AnimatableMixin, physics_registry, PhysicsState
+
+@physics_registry.register("pendulum")
+class Pendulum(PhysicsObject, AnimatableMixin):
+    def __init__(self, length: float, angle0: float):
+        super().__init__("Pendulum")
+        self.length = length
+        self.angle0 = angle0
+    
+    def state_at_time(self, t: float) -> PhysicsState:
+        # Calculate position/velocity at time t
+        ...
+    
+    def time_span(self) -> tuple[float, float]:
+        return (0.0, 10.0)  # 10 second animation
+
+# Now automatically works:
+from mechlab.visual import animate
+pendulum = Pendulum(1.0, 0.5)
+anim = animate(pendulum)  # Just works!
+```
