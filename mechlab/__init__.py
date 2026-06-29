@@ -28,6 +28,7 @@ from . import thermodynamics
 from . import units
 from . import math
 from . import core
+from . import design
 from . import visual
 from . import output
 
@@ -43,6 +44,7 @@ __all__ = [
     "units",
     "math",
     "core",
+    "design",
     "visual",
     "output",
     # Metadata

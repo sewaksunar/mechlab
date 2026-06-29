@@ -1,0 +1,3 @@
+- Workspace setup uses uv: run `uv sync` from repo root.
+- Local env is `.venv` with Python 3.13.13.
+- Smoke check passes: `uv run pytest tests/test_smoke.py`.
