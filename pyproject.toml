@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "A modular, object-oriented engineering mechanics library"
 readme = "README.md"
 requires-python = ">=3.9"
-authors = [{ name = "Your Name" }]
+authors = [{ name = "Sewak Sunar" }]
 license = { text = "MIT" }
 dependencies = []
 
