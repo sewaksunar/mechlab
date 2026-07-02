@@ -14,6 +14,7 @@ from mechlab.domain.entities import (
     SupportType,
 )
 from mechlab.domain.strength.beam import Beam
+from mechlab.interfaces.visual.plots import plot_moment, plot_shear, plot_fbd_beam
 
 
 class BeamAnalysis:
@@ -37,6 +38,9 @@ class BeamAnalysis:
         self.beam.add_support(Support(pos_a, SupportType.PIN))
         self.beam.add_support(Support(pos_b, SupportType.ROLLER))
         return self
+    def set_support(self, position: float, support_type: SupportType) -> BeamAnalysis:
+        self.beam.add_support(Support(position, support_type))
+        return self
 
     def run(self) -> dict:
         """Solve and return a summary report as a plain dict."""
@@ -49,3 +53,31 @@ class BeamAnalysis:
             "max_bending_stress_location_m": x_max,
             "safety_factor": yield_strength / sigma_max if sigma_max else float("inf"),
         }
+    # free body diagram of beam
+    def fbd_beam(
+            self,
+            save_path: str | None = None,
+            show: bool = False,
+    ):
+        """Solve the beam if needed and plot the free body diagram."""
+        self.beam.solve()
+        return plot_fbd_beam(self.beam, save_path=save_path, show=show)
+        
+    def plot_shear_moment(
+        self,
+        save_path: str | None = None,
+        show: bool = False,
+    ):
+        """Solve the beam if needed and plot the shear diagrams."""
+        self.beam.solve()
+        return plot_shear(self.beam, save_path=save_path, show=show)
+    
+    def plot_bending_moment_diagram(
+        self,
+        save_path: str | None = None,
+        show: bool = False,
+    ):
+        """Solve the beam if needed and plot the bending moment diagrams."""
+        self.beam.solve()
+        return plot_moment(self.beam, save_path=save_path, show=show)
+    

@@ -7,7 +7,7 @@ over inheritance for the solving algorithm itself).
 from __future__ import annotations
 
 from mechlab.domain.entities import Body, Material, Section
-from mechlab.engine.math.solvers import EquilibriumSolver
+from mechlab.engine.math.solvers import EquilibriumSolver, MatrixBeamSolver
 
 
 class Beam(Body):
@@ -15,12 +15,12 @@ class Beam(Body):
 
     def __init__(self, length: float, material: Material, section: Section):
         super().__init__(length, material, section)
-        self._solver = EquilibriumSolver()
+        self._solver = MatrixBeamSolver()
         self._solved = False
 
     def solve(self) -> None:
-        """Compute support reactions using the equilibrium solver."""
-        self._solver.solve_two_support_reactions(
+        """Compute support reactions using the matrix beam solver."""
+        self._solver.solve(
             self.length, self.loads, self.supports
         )
         self._solved = True
