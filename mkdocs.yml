@@ -1,6 +1,7 @@
 site_name: mechlab
 site_description: A modular, object-oriented engineering mechanics library
-repo_url: https://github.com/yourorg/mechlab
+repo_url: https://github.com/sewaksunar/mechlab.git
+copyright: Copyright &copy; 2026 Sewak Sunar
 theme:
   name: material
   palette:

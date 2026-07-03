@@ -5,7 +5,7 @@ Thanks for considering a contribution.
 ## Setup
 
 ```bash
-git clone https://github.com/yourorg/mechlab.git
+git clone https://github.com/sewaksunar/mechlab.git
 cd mechlab
 uv sync --extra dev --extra docs
 ```
