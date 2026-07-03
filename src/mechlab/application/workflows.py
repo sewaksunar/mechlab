@@ -44,9 +44,9 @@ def run_design_check(
         DesignCheckResult with pass/fail verdict and the full report.
     """
     report = analysis.run()
-    safety_factor = report["safety_factor"]
+    safety_factor = float(report["safety_factor"])
     return DesignCheckResult(
-        passed=safety_factor >= config.min_safety_factor,
+        passed=bool(safety_factor >= config.min_safety_factor),
         safety_factor=safety_factor,
         report=report,
     )

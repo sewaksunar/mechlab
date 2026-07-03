@@ -60,6 +60,21 @@ def plot_shear(
     return fig
 
 
+def plot_shear_moment(
+    beam,
+    num_points: int = 200,
+    save_path: str | Path | None = None,
+    show: bool = False,
+):
+    """Backward-compatible alias for plot_shear."""
+    return plot_shear(
+        beam,
+        num_points=num_points,
+        save_path=save_path,
+        show=show,
+    )
+
+
 def plot_moment(
     beam,
     num_points: int = 200,

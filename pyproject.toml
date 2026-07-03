@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 authors = [{ name = "Sewak Sunar" }]
 license = { text = "MIT" }
-dependencies = []
+dependencies = ["numpy>=1.24"]
 
 [project.scripts]
 mechlab = "mechlab.interfaces.cli.commands:main"
