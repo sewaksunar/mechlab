@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from enum import Enum
 
 # --------------------------------------------------------------------------
 # Material & Section — reusable value objects
@@ -99,7 +100,7 @@ class DistributedLoad(Load):
 # Support — boundary conditions
 # --------------------------------------------------------------------------
 
-class SupportType:
+class SupportType(str, Enum):
     PIN = "pin"
     ROLLER = "roller"
     FIXED = "fixed"

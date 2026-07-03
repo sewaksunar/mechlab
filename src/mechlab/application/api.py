@@ -5,6 +5,8 @@ workflows. This is the ONE place users should import from.
 
 from __future__ import annotations
 
+from typing import Any
+
 from mechlab.domain.entities import (
     DistributedLoad,
     Material,
@@ -38,6 +40,7 @@ class BeamAnalysis:
         self.beam.add_support(Support(pos_a, SupportType.PIN))
         self.beam.add_support(Support(pos_b, SupportType.ROLLER))
         return self
+
     def set_support(self, position: float, support_type: SupportType) -> BeamAnalysis:
         self.beam.add_support(Support(position, support_type))
         return self
@@ -55,10 +58,10 @@ class BeamAnalysis:
         }
     # free body diagram of beam
     def fbd_beam(
-            self,
-            save_path: str | None = None,
-            show: bool = False,
-    ):
+        self,
+        save_path: str | None = None,
+        show: bool = False,
+    ) -> Any:
         """Solve the beam if needed and plot the free body diagram."""
         self.beam.solve()
         return plot_fbd_beam(self.beam, save_path=save_path, show=show)
@@ -67,7 +70,7 @@ class BeamAnalysis:
         self,
         save_path: str | None = None,
         show: bool = False,
-    ):
+    ) -> Any:
         """Solve the beam if needed and plot the shear diagrams."""
         self.beam.solve()
         return plot_shear(self.beam, save_path=save_path, show=show)
@@ -76,7 +79,7 @@ class BeamAnalysis:
         self,
         save_path: str | None = None,
         show: bool = False,
-    ):
+    ) -> Any:
         """Solve the beam if needed and plot the bending moment diagrams."""
         self.beam.solve()
         return plot_moment(self.beam, save_path=save_path, show=show)
