@@ -14,7 +14,7 @@ from mechlab.domain.entities import (
     SupportType,
 )
 from mechlab.domain.strength.beam import Beam
-from mechlab.interfaces.visual.plots import plot_moment, plot_shear, plot_fbd_beam
+from mechlab.interfaces.visual.plots import plot_fbd_beam, plot_moment, plot_shear
 
 
 class BeamAnalysis:
@@ -62,7 +62,7 @@ class BeamAnalysis:
         """Solve the beam if needed and plot the free body diagram."""
         self.beam.solve()
         return plot_fbd_beam(self.beam, save_path=save_path, show=show)
-        
+
     def plot_shear_moment(
         self,
         save_path: str | None = None,
@@ -71,7 +71,7 @@ class BeamAnalysis:
         """Solve the beam if needed and plot the shear diagrams."""
         self.beam.solve()
         return plot_shear(self.beam, save_path=save_path, show=show)
-    
+
     def plot_bending_moment_diagram(
         self,
         save_path: str | None = None,
@@ -80,4 +80,4 @@ class BeamAnalysis:
         """Solve the beam if needed and plot the bending moment diagrams."""
         self.beam.solve()
         return plot_moment(self.beam, save_path=save_path, show=show)
-    
+

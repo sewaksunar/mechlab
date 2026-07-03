@@ -6,8 +6,10 @@ domain classes decoupled from solving algorithms (Strategy pattern).
 
 from __future__ import annotations
 
-from mechlab.domain.entities import Load, Support
 import numpy as np
+
+from mechlab.domain.entities import Load, Support
+
 
 class EquilibriumSolver:
     """
@@ -36,16 +38,16 @@ class EquilibriumSolver:
 
 class MatrixBeamSolver:
     """
-    A general beam solver capable of solving statically determinate and 
-    indeterminate beams with any number of vertical supports using the 
+    A general beam solver capable of solving statically determinate and
+    indeterminate beams with any number of vertical supports using the
     Matrix Stiffness Method.
     """
 
     def solve(
-        self, 
-        length: float, 
-        loads: list, 
-        supports: list, 
+        self,
+        length: float,
+        loads: list,
+        supports: list,
         E: float = 2.0e11,  # Default Young's Modulus (Pascal)
         I_val: float = 1.0e-5  # Default Moment of Inertia (m^4)
     ) -> None:
@@ -56,15 +58,14 @@ class MatrixBeamSolver:
         # Include boundary points, support locations, and load locations
         boundary_positions = {0.0, length}
         support_positions = {s.position for s in supports}
-        load_positions = {l.position for l in loads}
-        
+        load_positions = {load.position for load in loads}
         unique_positions = sorted(list(
             boundary_positions | support_positions | load_positions
         ))
-        
+
         num_nodes = len(unique_positions)
         num_dofs = 2 * num_nodes  # 2 DOFs per node: [vertical displacement, rotation]
-        
+
         # Map positions to node indices
         node_map = {pos: idx for idx, pos in enumerate(unique_positions)}
 
@@ -77,7 +78,7 @@ class MatrixBeamSolver:
             x1 = unique_positions[i]
             x2 = unique_positions[i + 1]
             L = x2 - x1
-            
+
             # Local stiffness matrix for a 2D Euler-Bernoulli beam element
             EI_L3 = (E * I_val) / (L ** 3)
             k_local = EI_L3 * np.array([
@@ -86,10 +87,10 @@ class MatrixBeamSolver:
                 [-12,     -6 * L,    12,      -6 * L],
                 [6 * L,   2 * L ** 2, -6 * L,  4 * L ** 2]
             ])
-            
+
             # Global DOF indices for this element
             dofs = [2 * i, 2 * i + 1, 2 * (i + 1), 2 * (i + 1) + 1]
-            
+
             # Mesh into global matrix
             for row_local, row_global in enumerate(dofs):
                 for col_local, col_global in enumerate(dofs):
@@ -122,8 +123,9 @@ class MatrixBeamSolver:
         # 6. Solve for Displacements
         try:
             displacements = np.linalg.solve(K_global, F_global)
-        except np.linalg.LinAlgError:
-            raise ValueError("The system matrix is singular. Check if your beam is kinematically unstable.")
+        except np.linalg.LinAlgError as exc:
+            raise ValueError("The system matrix is singular. Check if your beam is "
+        "kinematically unstable.") from exc
 
         # 7. Recover Reaction Forces
         # R = K_full * u - F_full

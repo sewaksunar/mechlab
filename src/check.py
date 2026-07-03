@@ -1,5 +1,5 @@
 from mechlab import BeamAnalysis
-from mechlab.domain.entities import Material, Section, SupportType
+from mechlab.domain.entities import Material, Section
 
 steel = Material(name="Steel A36", young_modulus=200e9, yield_strength=250e6)
 section = Section(name="W150x18", moment_of_inertia=9.19e-6, area=2.3e-3,

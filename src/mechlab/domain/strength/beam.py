@@ -7,7 +7,7 @@ over inheritance for the solving algorithm itself).
 from __future__ import annotations
 
 from mechlab.domain.entities import Body, Material, Section
-from mechlab.engine.math.solvers import EquilibriumSolver, MatrixBeamSolver
+from mechlab.engine.math.solvers import MatrixBeamSolver
 
 
 class Beam(Body):
