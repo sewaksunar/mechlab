@@ -39,7 +39,7 @@ ignore = []
 known-first-party = ["mechlab"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 files = ["src/mechlab"]
 disallow_untyped_defs = true
 warn_unused_ignores = true
