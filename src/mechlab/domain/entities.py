@@ -95,7 +95,30 @@ class DistributedLoad(Load):
     def __repr__(self) -> str:
         return f"DistributedLoad({self.intensity} N/m, {self.start}-{self.end} m)"
 
+class PointMoment(Load):
+    """
+    A concentrated applied moment (couple) acting at a point.
 
+    A pure couple has zero net force — it doesn't move the beam,
+    only twists it — so total_force() is always 0. Its moment about
+    *any* reference point is the couple's own magnitude, since a
+    couple's moment is independent of the point you take it about.
+
+    Sign convention: positive = counter-clockwise, in N·m.
+    """
+
+    def __init__(self, position: float, magnitude: float):
+        super().__init__(position)
+        self.magnitude = magnitude  # N·m, CCW positive
+
+    def total_force(self) -> float:
+        return 0.0
+
+    def moment_about(self, ref_position: float) -> float:
+        return self.magnitude
+
+    def __repr__(self) -> str:
+        return f"PointMoment({self.magnitude} N·m @ {self.position} m)"
 # --------------------------------------------------------------------------
 # Support — boundary conditions
 # --------------------------------------------------------------------------
@@ -143,3 +166,196 @@ class Body(ABC):
     def solve(self) -> None:
         """Solve equilibrium / internal reactions. Implemented by subclass."""
         raise NotImplementedError
+
+# src/mechlab/domain/entities.py
+
+@dataclass(frozen=True)
+class DeflectionResult:
+    positions: np.ndarray      # x-coordinates along the beam
+    deflection: np.ndarray     # v(x), same units as length
+    slope: np.ndarray          # v'(x), radians
+    max_deflection: float
+    max_deflection_location: float
+
+"""
+General geometric section-property calculator.
+
+Works for ANY closed polygon (rectangle, circle approximation, triangle,
+I-beam, L-angle, or a fully custom outline) using polygon integration
+(shoelace-formula-based Green's theorem), plus composite shapes built
+from multiple polygons (e.g. a solid outline minus one or more holes).
+
+No shape-specific formulas are hardcoded here — a rectangle and a
+hand-drawn arbitrary outline go through the exact same math.
+"""
+
+
+from dataclasses import dataclass
+import numpy as np
+
+
+@dataclass(frozen=True)
+class SectionProperties:
+    """All standard geometric properties of a 2D cross-section."""
+
+    area: float
+    centroid: tuple[float, float]
+
+    # Centroidal (about the shape's own centroid) second moments of area
+    Ixx: float          # about centroidal horizontal axis
+    Iyy: float          # about centroidal vertical axis
+    Ixy: float          # product of inertia
+    J: float            # polar moment, J = Ixx + Iyy
+
+    # Principal moments (Mohr's circle) — useful for unsymmetric shapes
+    I_max: float
+    I_min: float
+    principal_angle_deg: float
+
+    # Radii of gyration
+    rx: float
+    ry: float
+
+    # Extreme fiber distances from centroid (for bending stress / section modulus)
+    c_top: float
+    c_bottom: float
+    c_left: float
+    c_right: float
+
+    # Section moduli S = I / c
+    Sx_top: float
+    Sx_bottom: float
+    Sy_left: float
+    Sy_right: float
+
+    perimeter: float
+    vertices: np.ndarray  # the polygon(s) that were used, for plotting
+
+
+def _raw_moments(vertices: np.ndarray) -> tuple[float, float, float, float, float, float]:
+    """
+    Raw (about the global origin, NOT centroidal) area and moments for a
+    single closed polygon, via shoelace-formula polygon integration.
+
+    Returns (A, Qx, Qy, Ixx_o, Iyy_o, Ixy_o) where:
+        A      = signed area (positive if vertices are counter-clockwise)
+        Qx     = first moment of area about the x-axis, i.e. integral of y dA
+        Qy     = first moment of area about the y-axis, i.e. integral of x dA
+        Ixx_o  = second moment about the x-axis through the origin
+        Iyy_o  = second moment about the y-axis through the origin
+        Ixy_o  = product of inertia about the origin
+    """
+    x = vertices[:, 0]
+    y = vertices[:, 1]
+    x1 = np.roll(x, -1)
+    y1 = np.roll(y, -1)
+
+    cross = x * y1 - x1 * y  # per-edge shoelace term
+
+    A = np.sum(cross) / 2.0
+    Qx = np.sum((y + y1) * cross) / 6.0
+    Qy = np.sum((x + x1) * cross) / 6.0
+    Ixx_o = np.sum((y**2 + y * y1 + y1**2) * cross) / 12.0
+    Iyy_o = np.sum((x**2 + x * x1 + x1**2) * cross) / 12.0
+    Ixy_o = np.sum((x * y1 + 2 * x * y + 2 * x1 * y1 + x1 * y) * cross) / 24.0
+
+    return A, Qx, Qy, Ixx_o, Iyy_o, Ixy_o
+
+
+def _perimeter(vertices: np.ndarray) -> float:
+    x = vertices[:, 0]
+    y = vertices[:, 1]
+    x1 = np.roll(x, -1)
+    y1 = np.roll(y, -1)
+    return float(np.sum(np.hypot(x1 - x, y1 - y)))
+
+# for MOI and section modulus calculations, we need the full set of properties
+
+def compute_properties(shapes: list[np.ndarray]) -> SectionProperties:
+    """
+    Compute full section properties for a shape made of one or more
+    closed polygons.
+
+    `shapes` is a list of (N, 2) vertex arrays. Give solid regions in
+    counter-clockwise order and holes in clockwise order (their signed
+    area comes out negative automatically and is subtracted for you).
+    A single solid shape is just `shapes=[vertices]`.
+    """
+    A_total = 0.0
+    Qx_total = 0.0
+    Qy_total = 0.0
+    Ixx_o_total = 0.0
+    Iyy_o_total = 0.0
+    Ixy_o_total = 0.0
+    perimeter_total = 0.0
+
+    for verts in shapes:
+        verts = np.asarray(verts, dtype=float)
+        A, Qx, Qy, Ixx_o, Iyy_o, Ixy_o = _raw_moments(verts)
+        A_total += A
+        Qx_total += Qx
+        Qy_total += Qy
+        Ixx_o_total += Ixx_o
+        Iyy_o_total += Iyy_o
+        Ixy_o_total += Ixy_o
+        perimeter_total += _perimeter(verts)
+
+    if A_total <= 0:
+        raise ValueError(
+            "Total area came out zero or negative. Make sure solid outlines are "
+            "counter-clockwise and holes are clockwise."
+        )
+
+    cx = Qy_total / A_total
+    cy = Qx_total / A_total
+
+    # Parallel axis theorem: shift from origin to the combined centroid
+    Ixx = Ixx_o_total - A_total * cy**2
+    Iyy = Iyy_o_total - A_total * cx**2
+    Ixy = Ixy_o_total - A_total * cx * cy
+    J = Ixx + Iyy
+
+    # Principal moments of inertia (Mohr's circle for inertia)
+    I_avg = (Ixx + Iyy) / 2.0
+    R = np.sqrt(((Ixx - Iyy) / 2.0) ** 2 + Ixy**2)
+    I_max = I_avg + R
+    I_min = I_avg - R
+    theta_p = 0.5 * np.degrees(np.arctan2(-2 * Ixy, Ixx - Iyy))
+
+    rx = np.sqrt(Ixx / A_total)
+    ry = np.sqrt(Iyy / A_total)
+
+    all_x = np.concatenate([np.asarray(s)[:, 0] for s in shapes])
+    all_y = np.concatenate([np.asarray(s)[:, 1] for s in shapes])
+
+    c_top = float(np.max(all_y) - cy)
+    c_bottom = float(cy - np.min(all_y))
+    c_right = float(np.max(all_x) - cx)
+    c_left = float(cx - np.min(all_x))
+
+    def safe_div(a, b):
+        return float(a / b) if b > 1e-15 else float("inf")
+
+    return SectionProperties(
+        area=A_total,
+        centroid=(cx, cy),
+        Ixx=Ixx,
+        Iyy=Iyy,
+        Ixy=Ixy,
+        J=J,
+        I_max=I_max,
+        I_min=I_min,
+        principal_angle_deg=theta_p,
+        rx=rx,
+        ry=ry,
+        c_top=c_top,
+        c_bottom=c_bottom,
+        c_left=c_left,
+        c_right=c_right,
+        Sx_top=safe_div(Ixx, c_top),
+        Sx_bottom=safe_div(Ixx, c_bottom),
+        Sy_left=safe_div(Iyy, c_left),
+        Sy_right=safe_div(Iyy, c_right),
+        perimeter=perimeter_total,
+        vertices=np.array(shapes, dtype=object),
+    )

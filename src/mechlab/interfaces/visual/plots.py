@@ -1,5 +1,5 @@
 """
-interfaces.visual.plots — shear/moment diagram plotting.
+interfaces.visual.plots - shear/moment diagram plotting.
 
 Requires matplotlib, which is an optional dependency (install with
 `pip install mechlab[plots]` or `uv sync --extra plots`) so that core
@@ -10,6 +10,8 @@ need numeric results (e.g. running in a headless service).
 from __future__ import annotations
 
 from pathlib import Path
+import matplotlib.pyplot as plt
+from mechlab.domain.entities import DistributedLoad, PointLoad, PointMoment, SectionProperties, SupportType
 
 
 def plot_shear(
@@ -153,19 +155,28 @@ def plot_fbd_beam(beam, save_path: str | None = None, show: bool = False):
     # ------------------------------------------------------------------
     # 1. Classify loads and supports (duck typed, see module docstring)
     # ------------------------------------------------------------------
+# ------------------------------------------------------------------
+    # 1. Classify loads and supports (isinstance-based, not string duck typing)
+    # ------------------------------------------------------------------
     point_loads, moment_loads, dist_loads = [], [], []
     for load in beam.loads:
-        name = type(load).__name__
-        if "Moment" in name:
+        if isinstance(load, PointMoment):
             moment_loads.append(load)
-        elif "Distributed" in name:
+        elif isinstance(load, DistributedLoad):
             dist_loads.append(load)
-        else:
+        elif isinstance(load, PointLoad):
             point_loads.append(load)
+        else:
+            raise TypeError(
+                f"plot_fbd_beam: unrecognized load type {type(load).__name__!r}; "
+                "add a branch for it here."
+            )
 
-    hinge_supports = [
-        s for s in beam.supports if "HINGE" in str(getattr(s, "kind", "")).upper()
-    ]
+    # NOTE: SupportType currently only defines PIN / ROLLER / FIXED — there is
+    # no "hinge" support kind in the domain model yet, so this will always be
+    # an empty list today. Kept here (rather than deleted) so that adding a
+    # SupportType.HINGE later "just works" without touching this function again.
+    hinge_supports = [s for s in beam.supports if s.kind == getattr(SupportType, "HINGE", None)]
     reaction_supports = [s for s in beam.supports if s not in hinge_supports]
 
     # ------------------------------------------------------------------
@@ -257,7 +268,12 @@ def plot_fbd_beam(beam, save_path: str | None = None, show: bool = False):
         reaction_m = getattr(support, "reaction_moment", 0)
         if abs(reaction_m) > 1e-3:
             draw_moment_arrow(support.position, BEAM_Y, reaction_m, color="tab:blue")
+    pending_moment_arrows = []  # (x, y, magnitude, color) — rendered after axis limits are set
 
+    def draw_moment_arrow(x, y, magnitude, color="black"):
+        """Queue a moment symbol; actually drawn in step 10, once we know
+        the true data-to-pixel scale (needed to render a real circle)."""
+        pending_moment_arrows.append((x, y, magnitude, color))
     # ------------------------------------------------------------------
     # 5. Internal hinges (+ any moment load applied right at that point)
     # ------------------------------------------------------------------
@@ -327,15 +343,70 @@ def plot_fbd_beam(beam, save_path: str | None = None, show: bool = False):
     ax.set_xlim(-beam.length * 0.06, beam.length * 1.06)
     ax.set_ylim(-ARROW_H - 1.0, ARROW_H + 1.0)
     ax.set_title("Free body diagram", fontsize=13, fontweight="bold", pad=18)
+    # ------------------------------------------------------------------
+    # 10. Render queued moment arcs as TRUE circles
+    #
+    # We wait until here because a circle only looks like a circle once
+    # we know the real pixels-per-data-unit ratio for x vs y — and that
+    # ratio isn't known until the axis limits + layout are finalized.
+    # ------------------------------------------------------------------
+    if pending_moment_arrows:
+        fig.canvas.draw()  # force a layout pass so transData is accurate
 
+        p0 = ax.transData.transform((0, 0))
+        px = ax.transData.transform((1, 0))
+        py = ax.transData.transform((0, 1))
+        px_per_xunit = abs(px[0] - p0[0])
+        px_per_yunit = abs(py[1] - p0[1])
+
+        RADIUS_PT = 18  # on-screen radius of the moment loop, in points
+        dpi = fig.dpi
+        radius_x = (RADIUS_PT / 72 * dpi) / px_per_xunit
+        radius_y = (RADIUS_PT / 72 * dpi) / px_per_yunit
+
+        for x, y, magnitude, color in pending_moment_arrows:
+            cy = y + 0.55  # float the loop above/below the beam line
+            ccw = magnitude >= 0
+            theta1, theta2 = 20, 320  # 300-degree arc, gap left for the arrowhead
+
+            arc = patches.Arc(
+                (x, cy), 2 * radius_x, 2 * radius_y,
+                angle=0, theta1=theta1, theta2=theta2,
+                color=color, lw=1.6, zorder=4,
+            )
+            ax.add_patch(arc)
+
+            # arrowhead tangent to the arc, placed at whichever end
+            # indicates the rotation direction (CCW = positive)
+            end_theta = theta2 if ccw else theta1
+            near_theta = end_theta - (4 if ccw else -4)
+            tip = (
+                x + radius_x * np.cos(np.radians(end_theta)),
+                cy + radius_y * np.sin(np.radians(end_theta)),
+            )
+            near = (
+                x + radius_x * np.cos(np.radians(near_theta)),
+                cy + radius_y * np.sin(np.radians(near_theta)),
+            )
+            ax.annotate(
+                "", xy=tip, xytext=near,
+                arrowprops=dict(arrowstyle="-|>", color=color, lw=1.6, mutation_scale=12),
+                zorder=4,
+            )
+            ax.text(
+                x, cy + radius_y * 1.8, f"{abs(magnitude) / 1000:.1f} kN\u00b7m",
+                ha="center", va="bottom", color=color, fontsize=10, fontweight="bold",
+            )
     fig.tight_layout()
-
+    
     if save_path is not None:
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
     if show:
         plt.show()
 
     return fig
+
+    
 
 
 def _letters():
@@ -346,3 +417,12 @@ def _letters():
     for n in itertools.count(1):
         for combo in itertools.product(string.ascii_uppercase, repeat=n):
             yield "".join(combo)
+
+
+def plot_deflection_diagram(result: dict):
+    d = result["deflection"]
+    plt.plot(d.positions, d.deflection)
+    plt.axhline(0, color="gray", linewidth=0.5)
+    plt.scatter([d.max_deflection_location], [d.max_deflection], color="red", zorder=5)
+    plt.xlabel("x"); plt.ylabel("Deflection v(x)")
+    plt.title(f"Max deflection: {d.max_deflection:.4g} at x = {d.max_deflection_location:.3g}")

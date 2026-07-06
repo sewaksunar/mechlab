@@ -1,0 +1,19 @@
+/* Tighten up the API reference cards */
+.doc-heading {
+  font-weight: 700 !important;
+}
+
+.doc-object .doc-children {
+  border-left: 2px solid var(--md-primary-fg-color);
+  padding-left: 1rem;
+}
+
+/* Slightly larger code blocks for readability */
+.highlight code {
+  font-size: 0.82rem;
+}
+
+/* Smoother content width */
+.md-grid {
+  max-width: 1400px;
+}

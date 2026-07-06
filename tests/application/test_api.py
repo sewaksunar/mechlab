@@ -1,5 +1,4 @@
 """Application-layer test: exercises the public BeamAnalysis facade end-to-end."""
-
 from mechlab import BeamAnalysis
 from mechlab.domain.entities import Material, Section
 

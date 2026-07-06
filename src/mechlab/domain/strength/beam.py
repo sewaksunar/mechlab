@@ -6,7 +6,7 @@ over inheritance for the solving algorithm itself).
 
 from __future__ import annotations
 
-from mechlab.domain.entities import Body, Material, Section
+from mechlab.domain.entities import Body, Material, Section, PointMoment
 from mechlab.engine.math.solvers import MatrixBeamSolver
 
 
@@ -71,3 +71,18 @@ class Beam(Body):
 
     def __repr__(self) -> str:
         return f"Beam(length={self.length}m, material={self.material.name})"
+    
+    def moment_at(self, x: float) -> float:
+        """Internal bending moment at position x (from the left end)."""
+        self._require_solved()
+        m = 0.0
+        for s in self.supports:
+            if s.position <= x:
+                m += s.reaction_force * (x - s.position)
+        for load in self.loads:
+            if load.position <= x:
+                if isinstance(load, PointMoment):
+                    m += load.magnitude
+                else:
+                    m -= load.total_force() * (x - load.position)
+        return m

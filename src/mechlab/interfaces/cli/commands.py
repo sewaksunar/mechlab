@@ -1,11 +1,17 @@
-"""
-interfaces.cli.commands — command-line entry point.
+"""interfaces.cli.commands — command-line entry point.
 
-Usage:
-    python -m mechlab beam --length 4.0 --E 200e9 --yield 250e6 \\
-        --I 9.19e-6 --area 2.3e-3 --c 0.076 \\
-        --support 0.0 --support 4.0 \\
-        --point-load 2.0 5000
+Usage::
+
+        python -m mechlab beam \\
+            --length 4.0 \\
+            --E 200e9 \\
+            --yield 250e6 \\
+            --I 9.19e-6 \\
+            --area 2.3e-3 \\
+            --c 0.076 \\
+            --support 0.0 \\
+            --support 4.0 \\
+            --point-load 2.0 5000
 
 This module only parses args and calls into `application/` — it
 must never construct domain objects (Beam, Material, ...) directly

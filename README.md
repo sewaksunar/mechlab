@@ -117,12 +117,14 @@ See `.github/workflows/ci.yml`.
 ```bash
 uv sync --extra docs
 uv run mkdocs serve     # live preview, auto-reloads
-uv run mkdocs build     # static site -> site/
 ```
 
-The API reference is generated automatically from docstrings —
-see `docs/reference/*.md`. Docs auto-deploy to GitHub Pages on push
-to `main` via `.github/workflows/docs.yml`.
+Use `uv run mkdocs serve` while editing docs. Run `uv run mkdocs build`
+only when you need a deployable static site.
+
+The API reference is generated automatically from docstrings — see
+`docs/reference/*.md`. Docs auto-deploy to GitHub Pages on push to
+`main` via `.github/workflows/docs.yml`.
 
 ## Pre-commit hooks (optional but recommended)
 

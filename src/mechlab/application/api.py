@@ -11,6 +11,7 @@ from mechlab.domain.entities import (
     DistributedLoad,
     Material,
     PointLoad,
+    PointMoment,
     Section,
     Support,
     SupportType,
@@ -84,3 +85,11 @@ class BeamAnalysis:
         self.beam.solve()
         return plot_moment(self.beam, save_path=save_path, show=show)
 
+    def add_moment(self, position: float, magnitude: float) -> BeamAnalysis:
+        """
+        Add a concentrated applied moment (couple) at a point.
+
+        Sign convention: positive = counter-clockwise (N·m).
+        """
+        self.beam.add_load(PointMoment(position, magnitude))
+        return self

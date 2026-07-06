@@ -24,5 +24,6 @@ print(result["safety_factor"])
 
 - **[Getting Started](getting-started.md)** — install and run your first analysis
 - **[Architecture](architecture.md)** — how the four layers fit together
+- **[Project Guide](project-guide.md)** — practical guide to structure, workflow, adding features, and git habits
 - **[API Reference](reference/domain.md)** — auto-generated from docstrings
 - **[CLI Reference](cli.md)** — command-line usage
