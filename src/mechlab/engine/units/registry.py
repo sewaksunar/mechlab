@@ -7,12 +7,14 @@ can be given in other common engineering units without polluting the
 domain layer with unit-awareness.
 
 Example:
+    ```blash
     >>> from mechlab.engine.units.registry import UnitRegistry
     >>> ur = UnitRegistry()
     >>> ur.to_si(50, "kN")
     50000.0
     >>> ur.from_si(50000, "kN")
     50.0
+    ```
 """
 
 from __future__ import annotations

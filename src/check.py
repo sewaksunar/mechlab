@@ -6,7 +6,7 @@ section = Section(name="W150x18", moment_of_inertia=9.19e-6, area=2.3e-3, extrem
 
 F1 = 11120.554  # N, downward positive
 F2 = 4448.222   # N, downward positive
-M1 = 1500.0     # N·m, CCW positive — applied moment
+M1 = 1500.0     # N-m, CCW positive - applied moment
 
 analysis = BeamAnalysis(length=(203.200 * 3), material=steel, section=section)
 analysis.set_simple_supports(pos_a=0, pos_b=analysis.beam.length)

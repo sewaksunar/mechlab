@@ -1750,6 +1750,9 @@ name = "mechlab"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "matplotlib", version = "3.9.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
+    { name = "matplotlib", version = "3.10.9", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
+    { name = "matplotlib", version = "3.11.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "numpy", version = "2.0.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.10.*'" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
@@ -1781,6 +1784,7 @@ plots = [
 
 [package.metadata]
 requires-dist = [
+    { name = "matplotlib", specifier = ">=3.9.4" },
     { name = "matplotlib", marker = "extra == 'plots'", specifier = ">=3.7" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5" },
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.5" },
