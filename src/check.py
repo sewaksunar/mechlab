@@ -2,7 +2,13 @@ from mechlab import BeamAnalysis
 from mechlab.domain.entities import Material, Section
 
 steel = Material(name="Steel A36", young_modulus=200e9, yield_strength=250e6)
-section = Section(name="W150x18", moment_of_inertia=9.19e-6, area=2.3e-3, extreme_fiber_distance=0.076)
+# Replace line 5 with this:
+section = Section(
+    name="W150x18",
+    moment_of_inertia=9.19e-6,
+    area=2.3e-3,
+    extreme_fiber_distance=0.076
+)
 
 F1 = 11120.554  # N, downward positive
 F2 = 4448.222   # N, downward positive

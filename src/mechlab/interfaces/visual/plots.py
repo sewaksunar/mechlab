@@ -10,8 +10,15 @@ need numeric results (e.g. running in a headless service).
 from __future__ import annotations
 
 from pathlib import Path
+
 import matplotlib.pyplot as plt
-from mechlab.domain.entities import DistributedLoad, PointLoad, PointMoment, SectionProperties, SupportType
+
+from mechlab.domain.entities import (
+    DistributedLoad,
+    PointLoad,
+    PointMoment,
+    SupportType,
+)
 
 
 def plot_shear(
@@ -398,7 +405,7 @@ def plot_fbd_beam(beam, save_path: str | None = None, show: bool = False):
                 ha="center", va="bottom", color=color, fontsize=10, fontweight="bold",
             )
     fig.tight_layout()
-    
+
     if save_path is not None:
         fig.savefig(save_path, dpi=300, bbox_inches="tight")
     if show:
@@ -406,7 +413,7 @@ def plot_fbd_beam(beam, save_path: str | None = None, show: bool = False):
 
     return fig
 
-    
+
 
 
 def _letters():
@@ -424,5 +431,6 @@ def plot_deflection_diagram(result: dict):
     plt.plot(d.positions, d.deflection)
     plt.axhline(0, color="gray", linewidth=0.5)
     plt.scatter([d.max_deflection_location], [d.max_deflection], color="red", zorder=5)
-    plt.xlabel("x"); plt.ylabel("Deflection v(x)")
+    plt.xlabel("x")
+    plt.ylabel("Deflection v(x)")
     plt.title(f"Max deflection: {d.max_deflection:.4g} at x = {d.max_deflection_location:.3g}")

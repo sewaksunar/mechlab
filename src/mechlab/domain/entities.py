@@ -10,6 +10,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 
+import numpy as np
+
 # --------------------------------------------------------------------------
 # Material & Section — reusable value objects
 # --------------------------------------------------------------------------
@@ -188,11 +190,6 @@ from multiple polygons (e.g. a solid outline minus one or more holes).
 No shape-specific formulas are hardcoded here — a rectangle and a
 hand-drawn arbitrary outline go through the exact same math.
 """
-
-
-from dataclasses import dataclass
-import numpy as np
-
 
 @dataclass(frozen=True)
 class SectionProperties:
