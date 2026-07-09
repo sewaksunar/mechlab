@@ -330,7 +330,7 @@ def compute_properties(shapes: list[np.ndarray]) -> SectionProperties:
     c_right = float(np.max(all_x) - cx)
     c_left = float(cx - np.min(all_x))
 
-    def safe_div(a, b):
+    def safe_div(a: float, b: float) -> float:
         return float(a / b) if b > 1e-15 else float("inf")
 
     return SectionProperties(
