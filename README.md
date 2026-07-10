@@ -210,7 +210,7 @@ mechlab/
 
 ## Documentation
 
-Full documentation is available at **[username.github.io/mechlab](https://username.github.io/mechlab)**, organized into:
+Full documentation is available at **[sewaksunar.github.io/mechlab](https://sewaksunar.github.io/mechlab)**, organized into:
 
 - **User Guide:**:  core concepts and workflows
 - **Tutorials:** step-by-step worked examples
@@ -245,7 +245,7 @@ Contributions are welcome, whether it's a bug fix, a new feature, or a documenta
 Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** before opening an issue or pull request.
 
 ```bash
-git clone https://github.com/your-username/mechlab.git
+git clone https://github.com/sewaksunar/mechlab.git
 cd mechlab
 
 uv sync
