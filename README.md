@@ -1,156 +1,267 @@
-# mechlab
+<div align="center">
 
-A modular, object-oriented engineering mechanics library. This repo is
-intended as a **reusable template** — the beam analysis is a working
-example, but the architecture is designed to scale to statics, dynamics,
-and thermodynamics modules the same way.
+# MechLab
+
+**A modern Python framework for mechanical and structural engineering analysis**
+
+Beam theory, matrix solvers, and engineering visualization — built on clean, typed, object-oriented Python.
+
+[![Python](https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white)]()
+[![License](https://img.shields.io/badge/license-MIT-success)]()
+[![Build](https://img.shields.io/badge/build-passing-brightgreen)]()
+[![Type Checked](https://img.shields.io/badge/type--checked-mypy-blue)]()
+[![Code Style](https://img.shields.io/badge/code%20style-ruff-black)]()
+
+[Quick Start](#quick-start) · [Features](#features) · [Architecture](#architecture) · [Docs](#documentation) · [Contributing](#contributing)
+
+</div>
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Why MechLab](#why-mechlab)
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Documentation](#documentation)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Overview
+
+**MechLab** is an object-oriented Python framework for mechanical and structural engineering. It provides reusable engineering models, numerical solvers, and visualization tools for analyzing beams and structural systems — all built on a clean, modular architecture that scales from a quick hand-calc check to a full analysis pipeline.
+
+The project is built around five principles:
+
+| Principle | What it means in practice |
+|---|---|
+| **Domain-driven design** | Materials, sections, loads, and supports are first-class objects — not dictionaries or magic numbers |
+| **Modern Python** | Python 3.10+, full type hints, `pyproject.toml`-based packaging |
+| **Numerical accuracy** | Solvers validated against textbook and closed-form solutions |
+| **Type safety** | Fully typed codebase, checked with `mypy` |
+| **Extensibility** | Swap solvers, add element types, or plug in your own visualization backend |
+
+---
+
+## Why MechLab
+
+Most engineers reach for a spreadsheet or a monolithic legacy tool for beam analysis. MechLab exists for the space in between — when you need **more rigor than a spreadsheet** but **more speed and transparency than a black-box FEA package**.
+
+- **Readable models** — a `Material`, `Section`, or `Load` reads like the engineering concept it represents
+- **Unit-aware** — SI units throughout, with explicit conversions where needed
+- **Composable** — build up a beam from supports and loads, then swap the solver without touching your model
+- **Visual by default** — FBD, SFD, BMD, and deflection curves are one call away
+
+---
+
+## Features
+
+### 🔧 Engineering Models
+- Materials (elastic modulus, yield strength, density)
+- Cross-sections (area, moment of inertia, section modulus)
+- Supports (pin, roller, fixed)
+- Loads (point, distributed, moment)
+- Beam elements composed from the above
+
+### 📐 Analysis
+- Static equilibrium checks
+- Matrix-based beam solver
+- Reaction force computation
+- Internal shear and moment diagrams
+- Deflection analysis (double integration / matrix methods)
+
+### 📊 Visualization
+- Free Body Diagrams (FBD)
+- Shear Force Diagrams (SFD)
+- Bending Moment Diagrams (BMD)
+- Deflection curves
+
+### 🏗️ Software Design
+- Fully typed, `mypy`-checked codebase
+- Object-oriented, modular architecture
+- Unit-aware calculations throughout
+- Extensive test coverage against known solutions
+
+---
+
+## Installation
+
+Install the core package with [uv](https://github.com/astral-sh/uv):
+
+```bash
+uv add mechlab
+```
+
+Install with visualization support (matplotlib-based plotting):
+
+```bash
+uv sync --extra plots
+```
+
+> Prefer `pip`? `pip install mechlab` works too — `uv` is just faster.
+
+---
+
+## Quick Start
+
+```python
+from mechlab import Material, Section, Beam, Support, Load
+
+# Define a material
+steel = Material(
+    name="Steel A36",
+    young_modulus=200e9,   # Pa
+    yield_strength=250e6,  # Pa
+)
+
+# Define a cross-section
+section = Section(
+    name="W150x18",
+    area=2.3e-3,                # m²
+    moment_of_inertia=9.19e-6,  # m⁴
+)
+
+# Build a simply supported beam with a midspan point load
+beam = Beam(length=4.0, material=steel, section=section)
+beam.add_support(Support.pin(at=0.0))
+beam.add_support(Support.roller(at=4.0))
+beam.add_load(Load.point(magnitude=-10e3, at=2.0))  # 10 kN downward
+
+# Solve and inspect results
+result = beam.solve()
+print(result.reactions)
+print(f"Max deflection: {result.max_deflection():.4f} m")
+
+# Visualize
+result.plot_bmd()
+```
+
+---
 
 ## Architecture
 
-Four layers, strict one-directional dependency flow:
+MechLab follows a layered architecture — each layer depends only on the layer below it, keeping the domain models decoupled from both the solver internals and the public API.
 
-```
-interfaces/   -> CLI, reports, plots        (user/system facing)
-application/  -> workflow orchestration      (the public API)
-engine/       -> solvers, units, math        (numerical machinery)
-domain/       -> Body, Beam, Load, Material  (pure engineering science)
+```text
+                    User
+                      │
+                      V
+          ┌───────────────────────┐
+          │   Application API     │   public workflows, user-facing classes
+          └───────────+───────────┘
+                      │
+                      V
+          ┌───────────────────────┐
+          │   Solver Engine       │   numerical computation, matrix assembly
+          └───────────+───────────┘
+                      |
+                      V
+          ┌───────────────────────┐
+          │   Domain Models       │   materials, sections, loads, supports
+          └───────────+───────────┘
+                      │
+                      V
+          ┌───────────────────────┐
+          │   Shared Utilities    │   units, math helpers, validation
+          └───────────────────────┘
 ```
 
-**Rule:** a layer may only import from layers *below* it in this list.
-`domain/` never imports from `engine/`; `engine/` never imports from
-`application/`, and so on. This is what makes `domain/` unit-testable
-without pytest fixtures, mocks, or any I/O setup.
+| Layer | Responsibility |
+|---|---|
+| **Application** | Public API surface and end-to-end analysis workflows |
+| **Engine** | Numerical solvers — matrix assembly, equilibrium solving |
+| **Domain** | Engineering entities: materials, sections, loads, supports, beams |
+| **Shared** | Cross-cutting utilities: unit handling, validation, math helpers |
 
-```
+---
+
+## Project Structure
+
+```text
 mechlab/
-├── pyproject.toml
-├── README.md / CHANGELOG.md / CONTRIBUTING.md / LICENSE
-├── mkdocs.yml
-├── .github/workflows/         # CI: lint + type check + test, docs deploy
-├── .pre-commit-config.yaml
-├── src/mechlab/
-│   ├── __init__.py           # public API surface + architecture doc
-│   ├── __main__.py           # `python -m mechlab`
-│   ├── domain/
-│   │   ├── entities.py       # Body (ABC), Material, Section, Load hierarchy, Support
-│   │   └── strength/
-│   │       └── beam.py       # Beam(Body) — concrete OOP subclass
-│   ├── engine/
-│   │   ├── math/solvers.py   # EquilibriumSolver (Strategy pattern)
-│   │   └── units/registry.py # UnitRegistry — SI <-> other units
-│   ├── application/
-│   │   ├── api.py            # BeamAnalysis — the facade users import
-│   │   ├── config.py         # AnalysisConfig — app-level thresholds/defaults
-│   │   └── workflows.py      # multi-step analyses (e.g. design checks)
-│   ├── interfaces/
-│   │   ├── cli/commands.py   # `mechlab beam --length ...`
-│   │   ├── output/report.py  # ReportGenerator
-│   │   └── visual/plots.py   # shear/moment diagrams (optional matplotlib extra)
-│   └── shared/
-│       └── utils.py          # dependency-free helpers, usable anywhere
-├── tests/                    # mirrors src/, one test dir per layer, 94% coverage
-├── docs/                     # MkDocs source, auto-generates API ref from docstrings
-└── examples/
-    └── simply_supported_beam.py
++--- src/
++   +--- mechlab/
++       +--- application/     # Public API and workflows
++       +--- domain/          # Materials, sections, loads, supports
++       +--- engine/          # Numerical solvers
++       +--- interfaces/      # Protocols / abstract base classes
++       +--- shared/          # Units, validation, math utilities
++       +--- __init__.py
++       +--- __main__.py
++
++--- docs/                     # User guide, tutorials, API reference
++--- examples/                 # Runnable example scripts
++--- tests/                    # Unit and validation tests
++--- .github/                  # CI workflows
++--- pyproject.toml
++--- README.md
++--- LICENSE
++--- CONTRIBUTING.md
 ```
 
-## Install
-
-```bash
-pip install -e ".[dev]"
-```
-
-## Quick start (Python API)
-
-```python
-from mechlab import BeamAnalysis
-from mechlab.domain.entities import Material, Section
-
-steel = Material(name="Steel A36", young_modulus=200e9, yield_strength=250e6)
-section = Section(name="W150x18", moment_of_inertia=9.19e-6, area=2.3e-3,
-                   extreme_fiber_distance=0.076)
-
-result = (
-    BeamAnalysis(length=4.0, material=steel, section=section)
-    .set_simple_supports(0.0, 4.0)
-    .add_point_load(2.0, 5000)
-    .add_distributed_load(0.0, 4.0, 1000)
-    .run()
-)
-
-print(result["safety_factor"])
-```
-
-## Quick start (CLI)
-
-```bash
-python -m mechlab beam \
-    --length 4.0 --E 200e9 --yield 250e6 \
-    --I 9.19e-6 --area 2.3e-3 --c 0.076 \
-    --support 0.0 --support 4.0 \
-    --point-load 2.0 5000
-```
-
-## Running tests
-
-```bash
-uv run pytest --cov=mechlab --cov-report=term-missing
-```
-
-Tests are organized by layer (`tests/domain`, `tests/engine`,
-`tests/application`, `tests/interfaces`, `tests/shared`) so you can see
-exactly which architectural layer each test targets. Currently at 94% coverage.
-
-## Linting & type checking
-
-```bash
-uv run ruff check src tests examples   # lint
-uv run ruff check --fix                # auto-fix what's fixable
-uv run mypy                            # type check
-```
-
-CI runs all three (plus tests) on every push/PR across Python 3.9–3.12.
-See `.github/workflows/ci.yml`.
+---
 
 ## Documentation
 
+Full documentation is available at **[username.github.io/mechlab](https://username.github.io/mechlab)**, organized into:
+
+- **User Guide:**:  core concepts and workflows
+- **Tutorials:** step-by-step worked examples
+- **API Reference:** complete class and method reference
+- **Mathematical Background:** the theory behind each solver
+
+---
+
+## Roadmap
+
+### ✅ Current
+- Beam analysis
+- Materials & sections
+- Loads & supports
+
+### 🚧 Planned
+- Truss analysis
+- Frame analysis
+- Full FEM support
+- Dynamic (modal) analysis
+- Buckling analysis
+- Composite materials
+
+Have a feature request? Open an issue — roadmap priorities are shaped by community input.
+
+---
+
+## Contributing
+
+Contributions are welcome, whether it's a bug fix, a new feature, or a documentation improvement.
+
+Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** before opening an issue or pull request.
+
 ```bash
-uv sync --extra docs
-uv run mkdocs serve     # live preview, auto-reloads
+git clone https://github.com/your-username/mechlab.git
+cd mechlab
+
+uv sync
+pytest
 ```
 
-Use `uv run mkdocs serve` while editing docs. Run `uv run mkdocs build`
-only when you need a deployable static site.
+---
 
-The API reference is generated automatically from docstrings — see
-`docs/reference/*.md`. Docs auto-deploy to GitHub Pages on push to
-`main` via `.github/workflows/docs.yml`.
+## License
 
-## Pre-commit hooks (optional but recommended)
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
-```bash
-uv run pre-commit install
-```
+---
 
-Runs ruff + mypy + basic hygiene checks automatically before each commit.
+<div align="center">
 
-## Extending the template
+**Designed for engineers. Built with Python.**
 
-**Adding a new Body type (e.g. Truss):**
-1. Create `domain/statics/truss.py`, subclass `Body`, implement `solve()`.
-2. Reuse `EquilibriumSolver` from `engine/math/` if it fits, or add a
-   new solver class there (keep solving algorithms out of `domain/`).
-3. Add a facade method/class in `application/api.py`.
-4. Wire a CLI subcommand in `interfaces/cli/commands.py` if needed.
-5. Add tests under `tests/domain/`, `tests/engine/`, `tests/application/`.
-
-**Adding a new unit:**
-Call `UnitRegistry().register("symbol", si_factor)`, or add it to the
-default table in `engine/units/registry.py`.
-
-## Design patterns used
-
-- **Abstract Base Class** — `Body`, `Load` define contracts subclasses must fulfill.
-- **Strategy** — `EquilibriumSolver` is composed into `Beam`, not inherited, so solving algorithms are swappable.
-- **Facade** — `BeamAnalysis` hides domain/engine complexity behind a fluent API.
-- **Method chaining** — `add_load()`, `add_support()` etc. return `self` for a readable fluent interface.
+</div>
