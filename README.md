@@ -1,26 +1,27 @@
-<div align="center">
+<p align="center">
+    <a href="https://sewaksunar.github.io/mechlab"><img src="https://raw.githubusercontent.com/sewaksunar/mechlab/main/docs/source/_static/logo.png" alt="MechLab logo" width="220"></a>
+    <br />
+    <br />
+    <a href="https://pypi.org/project/mechlab/"><img src="https://img.shields.io/pypi/v/mechlab.svg?style=flat&logo=pypi" alt="PyPI Latest Release"></a>
+    <a href="https://github.com/sewaksunar/mechlab/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-red.svg?style=flat" alt="MIT License"></a>
+    <a href="https://github.com/sewaksunar/mechlab/actions"><img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build"></a>
+    <a href="https://mypy-lang.org/"><img src="https://img.shields.io/badge/type--checked-mypy-blue" alt="Type Checked"></a>
+    <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-black" alt="Code Style"></a>
+    <a href="https://sewaksunar.github.io/mechlab"><img src="https://img.shields.io/badge/docs-passing-blue" alt="Documentation Status"></a>
+    <a href="https://github.com/sewaksunar/mechlab/discussions"><img src="https://img.shields.io/badge/discussions-join-orange?logo=github" alt="GitHub Discussions"></a>
+    <br />
+    <br />
+    <i>A modern Python library for mechanical engineering calculations.</i>
+</p>
+<hr />
 
-# MechLab
+**MechLab** is an object-oriented Python library for mechanical engineering calculations inluding finite element methods, matrix solvers, and engineering visualization, built on clean, typed, modern Python.
 
-**A modern Python framework for mechanical and structural engineering analysis**
-
-Beam theory, matrix solvers, and engineering visualization — built on clean, typed, object-oriented Python.
-
-[![Python](https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white)]()
-[![License](https://img.shields.io/badge/license-MIT-success)]()
-[![Build](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![Type Checked](https://img.shields.io/badge/type--checked-mypy-blue)]()
-[![Code Style](https://img.shields.io/badge/code%20style-ruff-black)]()
-
-[Quick Start](#quick-start) · [Features](#features) · [Architecture](#architecture) · [Docs](#documentation) · [Contributing](#contributing)
-
-</div>
-
----
+> [!NOTE]
+> MechLab focuses on structural and beam analysis first. Materials, sections, loads, and supports are modeled as first-class typed objects rather than dictionaries or magic numbers, so results stay traceable from input to output.
 
 ## Table of Contents
 
-- [Overview](#overview)
 - [Why MechLab](#why-mechlab)
 - [Features](#features)
 - [Installation](#installation)
@@ -28,70 +29,36 @@ Beam theory, matrix solvers, and engineering visualization — built on clean, t
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
 - [Documentation](#documentation)
+- [Help with MechLab](#help-with-mechlab)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
+- [How to Cite MechLab](#how-to-cite-mechlab)
 - [License](#license)
 
----
-
-## Overview
-
-**MechLab** is an object-oriented Python framework for mechanical and structural engineering. It provides reusable engineering models, numerical solvers, and visualization tools for analyzing beams and structural systems — all built on a clean, modular architecture that scales from a quick hand-calc check to a full analysis pipeline.
-
-The project is built around five principles:
+## Why MechLab
 
 | Principle | What it means in practice |
 |---|---|
-| **Domain-driven design** | Materials, sections, loads, and supports are first-class objects — not dictionaries or magic numbers |
+| **Domain-driven design** | Materials, sections, loads, and supports are first-class objects |
 | **Modern Python** | Python 3.10+, full type hints, `pyproject.toml`-based packaging |
 | **Numerical accuracy** | Solvers validated against textbook and closed-form solutions |
 | **Type safety** | Fully typed codebase, checked with `mypy` |
 | **Extensibility** | Swap solvers, add element types, or plug in your own visualization backend |
 
----
-
-## Why MechLab
-
-Most engineers reach for a spreadsheet or a monolithic legacy tool for beam analysis. MechLab exists for the space in between — when you need **more rigor than a spreadsheet** but **more speed and transparency than a black-box FEA package**.
-
-- **Readable models** — a `Material`, `Section`, or `Load` reads like the engineering concept it represents
-- **Unit-aware** — SI units throughout, with explicit conversions where needed
-- **Composable** — build up a beam from supports and loads, then swap the solver without touching your model
-- **Visual by default** — FBD, SFD, BMD, and deflection curves are one call away
-
----
-
 ## Features
 
-### 🔧 Engineering Models
-- Materials (elastic modulus, yield strength, density)
-- Cross-sections (area, moment of inertia, section modulus)
-- Supports (pin, roller, fixed)
-- Loads (point, distributed, moment)
-- Beam elements composed from the above
+**Engineering Models:**  materials, cross-sections, supports (pin, roller, fixed), loads (point, distributed, moment), and beam elements composed from the above.
 
-### 📐 Analysis
-- Static equilibrium checks
-- Matrix-based beam solver
-- Reaction force computation
-- Internal shear and moment diagrams
-- Deflection analysis (double integration / matrix methods)
+**Analysis:**  static equilibrium checks, a matrix-based beam solver, reaction force computation, internal shear and moment diagrams, and deflection analysis via double integration or matrix methods.
 
-### 📊 Visualization
-- Free Body Diagrams (FBD)
-- Shear Force Diagrams (SFD)
-- Bending Moment Diagrams (BMD)
-- Deflection curves
+**Visualization:**  free body diagrams (FBD), shear force diagrams (SFD), bending moment diagrams (BMD), and deflection curves.
 
-### 🏗️ Software Design
-- Fully typed, `mypy`-checked codebase
-- Object-oriented, modular architecture
-- Unit-aware calculations throughout
-- Extensive test coverage against known solutions
-
----
+**Software Design:**  fully typed and `mypy`-checked, object-oriented and modular, unit-aware throughout, with extensive test coverage against known solutions.
 
 ## Installation
+
+> [!CAUTION]
+> MechLab requires Python 3.10 or newer. If you're on an older interpreter, upgrade Python before installing.
 
 Install the core package with [uv](https://github.com/astral-sh/uv):
 
@@ -105,11 +72,12 @@ Install with visualization support (matplotlib-based plotting):
 uv sync --extra plots
 ```
 
-> Prefer `pip`? `pip install mechlab` works too — `uv` is just faster.
-
----
+> [!Note]
+> Prefer `pip`? `pip install mechlab` works too but `uv` is just faster.
 
 ## Quick Start
+
+The following is an example analysis you can run right away:
 
 ```python
 from mechlab import Material, Section, Beam, Support, Load
@@ -124,8 +92,8 @@ steel = Material(
 # Define a cross-section
 section = Section(
     name="W150x18",
-    area=2.3e-3,                # m²
-    moment_of_inertia=9.19e-6,  # m⁴
+    area=2.3e-3,                # m^2
+    moment_of_inertia=9.19e-6,  # m^4
 )
 
 # Build a simply supported beam with a midspan point load
@@ -143,34 +111,34 @@ print(f"Max deflection: {result.max_deflection():.4f} m")
 result.plot_bmd()
 ```
 
----
+Save this as `example.py` and run it with `python example.py`. A bending moment diagram will render using the `plots` extra. You can find more worked examples in the [`examples/`](examples) directory, or visit the [tutorials](https://sewaksunar.github.io/mechlab/tutorial/) for step-by-step walkthroughs.
 
 ## Architecture
 
-MechLab follows a layered architecture — each layer depends only on the layer below it, keeping the domain models decoupled from both the solver internals and the public API.
+MechLab follows a layered architecture. Each layer depends only on the layer below it, keeping domain models decoupled from both solver internals and the public API.
 
 ```text
                     User
-                      │
-                      V
-          ┌───────────────────────┐
-          │   Application API     │   public workflows, user-facing classes
-          └───────────+───────────┘
-                      │
-                      V
-          ┌───────────────────────┐
-          │   Solver Engine       │   numerical computation, matrix assembly
-          └───────────+───────────┘
                       |
-                      V
-          ┌───────────────────────┐
-          │   Domain Models       │   materials, sections, loads, supports
-          └───────────+───────────┘
-                      │
-                      V
-          ┌───────────────────────┐
-          │   Shared Utilities    │   units, math helpers, validation
-          └───────────────────────┘
+                      v
+          +-----------------------+
+          |   Application API     |   public workflows, user-facing classes
+          +-----------------------+
+                      |
+                      v
+          +-----------------------+
+          |   Solver Engine       |   numerical computation, matrix assembly
+          +-----------------------+
+                      |
+                      v
+          +-----------------------+
+          |   Domain Models       |   materials, sections, loads, supports
+          +-----------------------+
+                      |
+                      v
+          +-----------------------+
+          |   Shared Utilities    |   units, math helpers, validation
+          +-----------------------+
 ```
 
 | Layer | Responsibility |
@@ -179,8 +147,6 @@ MechLab follows a layered architecture — each layer depends only on the layer 
 | **Engine** | Numerical solvers — matrix assembly, equilibrium solving |
 | **Domain** | Engineering entities: materials, sections, loads, supports, beams |
 | **Shared** | Cross-cutting utilities: unit handling, validation, math helpers |
-
----
 
 ## Project Structure
 
@@ -206,53 +172,41 @@ mechlab/
 +--- CONTRIBUTING.md
 ```
 
----
-
 ## Documentation
 
-Full documentation is available at **[sewaksunar.github.io/mechlab](https://sewaksunar.github.io/mechlab)**, organized into:
+Full documentation is available at **[Docs](https://sewaksunar.github.io/mechlab)**, organized into:
 
-- **User Guide:**:  core concepts and workflows
+- **User Guide:** core concepts and workflows
 - **Tutorials:** step-by-step worked examples
 - **API Reference:** complete class and method reference
-- **Mathematical Background:** the theory behind each solver
 
----
+## Help with MechLab
+
+If you need help installing or using MechLab, feel free to reach out on [GitHub Discussions](https://github.com/sewaksunar/mechlab/discussions). If you'd like to submit a bug report or feature request, please [open an issue](https://github.com/sewaksunar/mechlab/issues).
 
 ## Roadmap
 
-### ✅ Current
-- Beam analysis
-- Materials & sections
-- Loads & supports
+**Current:**  beam analysis, materials & sections, loads & supports.
 
-### 🚧 Planned
-- Truss analysis
-- Frame analysis
-- Full FEM support
-- Dynamic (modal) analysis
-- Buckling analysis
-- Composite materials
+**Planned:**  truss analysis, frame analysis, full FEM support, dynamic (modal) analysis, buckling analysis, composite materials.
 
-Have a feature request? Open an issue — roadmap priorities are shaped by community input.
-
----
+Have a feature request? Open an issue, roadmap priorities are shaped by community input.
 
 ## Contributing
 
-Contributions are welcome, whether it's a bug fix, a new feature, or a documentation improvement.
+Contributions are always welcome, whether it's a bug fix, a new feature, or a documentation improvement.
 
-Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** before opening an issue or pull request.
+Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** before opening an issue or pull request, and see the full guide at **[here](https://sewaksunar.github.io/mechlab/contributing)**.
 
-```bash
-git clone https://github.com/sewaksunar/mechlab.git
-cd mechlab
+Most development uses [`uv`](https://docs.astral.sh/uv/) for environment and dependency management, install it first, then follow the [development setup guide](https://sewaksunar.github.io/mechlab/contributing) in the docs.
 
-uv sync
-pytest
-```
+## How to Cite MechLab
 
----
+We acknowledge the importance of good software in supporting engineering research and practice. If MechLab supported your work, please cite it — this helps demonstrate its value and supports continued development. The recommended citation format is available via the "cite this repository" button on the [repository page](https://github.com/sewaksunar/mechlab).
+
+<!-- ## Code of Conduct
+
+Our full code of conduct, and how we enforce it, can be read in [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). -->
 
 ## License
 
@@ -262,6 +216,6 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
 <div align="center">
 
-**Designed for engineers. Built with Python.**
+**Designed for mechanical engineers. Built with Python.**
 
 </div>
