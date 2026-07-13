@@ -1,17 +1,11 @@
-"""interfaces.cli.commands — command-line entry point.
+"""
+interfaces.cli.commands — command-line entry point.
 
-Usage::
-
-        python -m mechlab beam \\
-            --length 4.0 \\
-            --E 200e9 \\
-            --yield 250e6 \\
-            --I 9.19e-6 \\
-            --area 2.3e-3 \\
-            --c 0.076 \\
-            --support 0.0 \\
-            --support 4.0 \\
-            --point-load 2.0 5000
+Usage:
+    python -m mechlab beam --length 4.0 --E 200e9 --yield 250e6 \\
+        --I 9.19e-6 --area 2.3e-3 --c 0.076 \\
+        --support 0.0 --support 4.0 \\
+        --point-load 2.0 5000
 
 This module only parses args and calls into `application/` — it
 must never construct domain objects (Beam, Material, ...) directly
@@ -22,14 +16,26 @@ so behavior stays identical whether triggered by CLI, script, or API.
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 
 from mechlab.application.api import BeamAnalysis
 from mechlab.domain.entities import Material, Section
+from mechlab.interfaces.cli.info import format_info_text, get_package_info
 from mechlab.interfaces.output.report import ReportGenerator
+
+
+def _get_version() -> str:
+    try:
+        return importlib.metadata.version("mechlab")
+    except importlib.metadata.PackageNotFoundError:
+        return "unknown (not installed)"
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="mechlab", description="mechlab CLI")
+    parser.add_argument(
+        "--version", action="version", version=f"mechlab {_get_version()}"
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     beam = sub.add_parser("beam", help="Analyze a simply-supported beam")
@@ -44,6 +50,8 @@ def build_parser() -> argparse.ArgumentParser:
                        help="Support position (m). Pass twice for pin+roller.")
     beam.add_argument("--point-load", type=float, nargs=2, action="append", default=[],
                        metavar=("POSITION", "MAGNITUDE"), help="Point load: position magnitude")
+
+    sub.add_parser("info", help="Show version, install location, and environment info")
 
     return parser
 
@@ -73,3 +81,5 @@ def main() -> None:
 
     if args.command == "beam":
         print(run_beam_command(args))
+    elif args.command == "info":
+        print(format_info_text(get_package_info()))
