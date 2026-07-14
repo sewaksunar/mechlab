@@ -7,7 +7,6 @@ x0 = 0.020    # Guaranteed minimum life
 theta = 4.459 # Characteristic parameter
 b = 1.483     # Shape parameter (skewness)
 
-# 2. Calculation of Distributional Properties [Source 3, 476-479]
 # Mean Dimensionless Life (mu_x)
 mean_x = x0 + (theta - x0) * gamma(1 + 1/b)
 
