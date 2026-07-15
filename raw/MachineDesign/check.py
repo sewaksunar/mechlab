@@ -74,3 +74,6 @@ plt.show()
 
 # check 1
 # check 2
+
+
+# standard boundary dimensions for bearings (ABMA standard)
